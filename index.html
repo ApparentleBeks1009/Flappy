@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Flappy Bird Graffiti</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body {
+    height:100%; overflow:hidden;
+    background:#4ec0ca;
+    font-family:Arial,sans-serif;
+    touch-action:none; user-select:none;
+    -webkit-user-select:none;
+  }
+  #game { display:block; margin:0 auto; background:#4ec0ca; touch-action:none; }
+  #hud {
+    position:fixed; top:10px; left:0; right:0;
+    text-align:center; color:#fff;
+    font-size:34px; font-weight:bold;
+    text-shadow:3px 3px 0 #000;
+    pointer-events:none; z-index:10;
+  }
+  #msg {
+    position:fixed; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    color:#fff; font-size:26px; font-weight:bold;
+    text-align:center; text-shadow:2px 2px 0 #000;
+    pointer-events:none; z-index:10; line-height:1.6;
+  }
+</style>
+</head>
+<body>
+<div id="hud">0</div>
+<div id="msg">Тапни, чтобы начать</div>
+<canvas id="game"></canvas>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const hud = document.getElementById('hud');
+const msg = document.getElementById('msg');
+
+let W, H;
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', () => { resize(); reset(); });
+
+// ===== ФИЗИКА =====
+const GRAVITY       = 0.5;
+const JUMP          = -7.5;
+const MAX_FALL      = 10;
+const PIPE_W        = 70;
+const GAP           = 180;
+const PIPE_SPEED    = 3;
+const PIPE_INTERVAL = 90;
+
+let bird, pipes, score, frame, state;
+
+function reset() {
+  bird = { x: W * 0.3, y: H / 2, r: 15, vy: 0, rot: 0 };
+  pipes = [];
+  score = 0;
+  frame = 0;
+  state = 'ready';
+  hud.textContent = '0';
+  msg.textContent = 'Тапни, чтобы начать';
+}
+
+function flap() {
+  if (state === 'ready') {
+    state = 'play';
+    msg.textContent = '';
+    bird.vy = JUMP;
+  } else if (state === 'play') {
+    bird.vy = JUMP;
+  } else if (state === 'over') {
+    reset();
+  }
+}
+
+canvas.addEventListener('touchstart', e => { e.preventDefault(); flap(); }, {passive:false});
+canvas.addEventListener('mousedown', e => { e.preventDefault(); flap(); });
+window.addEventListener('keydown', e => {
+  if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); flap(); }
+});
+
+function spawnPipe() {
+  const minTop = 70;
+  const maxTop = H - GAP - 70;
+  const top = minTop + Math.random() * (maxTop - minTop);
+  pipes.push({ x: W, top: top, passed: false, seed: Math.floor(Math.random() * 99999) });
+}
+
+// ===== ГРАФФИТИ-ТЕКСТУРА ТРУБЫ =====
+function drawGraffiti(x, y, w, h, seed) {
+  if (h <= 0 || w <= 0) return;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x, y, w, h);
+  ctx.clip();
+
+  const grad = ctx.createLinearGradient(x, 0, x + w, 0);
+  grad.addColorStop(0,    '#0d2f5c');
+  grad.addColorStop(0.2,  '#1e5aa8');
+  grad.addColorStop(0.45, '#4a95dd');
+  grad.addColorStop(0.6,  '#7ec3f0');
+  grad.addColorStop(0.8,  '#3d8fd6');
+  grad.addColorStop(1,    '#0d2f5c');
+  ctx.fillStyle = grad;
+  ctx.fillRect(x, y, w, h);
+
+  let s = seed;
+  function rnd() {
+    s = (s * 9301 + 49297) % 233280;
+    return s / 233280;
+  }
+
+  const step = 45;
+  for (let cy = y + 20; cy < y + h + 40; cy += step) {
+    const count = 2 + Math.floor(rnd() * 3);
+    for (let k = 0; k < count; k++) {
+      const pw = 20 + rnd() * 35;
+      const ph = 18 + rnd() * 25;
+      const px = x + 5 + rnd() * (w - pw - 10);
+      const py = cy + (rnd() - 0.5) * 35;
+      const rot = (rnd() - 0.5) * 1.0;
+
+      ctx.save();
+      ctx.translate(px + pw / 2, py + ph / 2);
+      ctx.rotate(rot);
+
+      ctx.fillStyle = '#000';
+      ctx.fillRect(-pw/2 - 4, -ph/2 - 4, pw + 8, ph + 8);
+
+      const tones = ['#1a4d8f', '#2a6fc4', '#4a95dd', '#6fb8ee', '#8ed0f5'];
+      ctx.fillStyle = tones[Math.floor(rnd() * tones.length)];
+      ctx.fillRect(-pw/2, -ph/2, pw, ph);
+
+      ctx.fillStyle = 'rgba(200, 235, 255, 0.9)';
+      ctx.fillRect(-pw/2 + 2, -ph/2 + 2, pw - 4, 4);
+
+      if (rnd() > 0.4) {
+        ctx.fillStyle = '#000';
+        const dx = -pw/2 + 6 + rnd() * (pw - 16);
+        const dy = -ph/2 + 8 + rnd() * (ph - 16);
+        ctx.fillRect(dx, dy, 5 + rnd() * 10, 4 + rnd() * 8);
+      }
+
+      if (rnd() > 0.6) {
+        ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(-pw/2, -ph/2, pw, ph);
+      }
+
+      ctx.restore();
+    }
+  }
+
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 6;
+  ctx.strokeRect(x + 3, y + 3, w - 6, h - 6);
+
+  ctx.fillStyle = 'rgba(180, 225, 255, 0.4)';
+  ctx.fillRect(x + 10, y, 6, h);
+
+  ctx.fillStyle = 'rgba(5, 15, 40, 0.5)';
+  ctx.fillRect(x + w - 14, y, 14, h);
+
+  ctx.restore();
+}
+
+// ===== КРЫШКА ТРУБЫ =====
+function drawCap(x, y, w, h, seed) {
+  ctx.fillStyle = '#000';
+  ctx.fillRect(x - 7, y - 5, w + 14, h + 10);
+
+  const grad = ctx.createLinearGradient(x, 0, x + w, 0);
+  grad.addColorStop(0,   '#0d2f5c');
+  grad.addColorStop(0.3, '#2a6fc4');
+  grad.addColorStop(0.55,'#7ec3f0');
+  grad.addColorStop(0.8, '#3d8fd6');
+  grad.addColorStop(1,   '#0d2f5c');
+  ctx.fillStyle = grad;
+  ctx.fillRect(x, y, w, h);
+
+  let s = seed + 1234;
+  function rnd() {
+    s = (s * 9301 + 49297) % 233280;
+    return s / 233280;
+  }
+  for (let i = 0; i < 4; i++) {
+    const pw = 14 + rnd() * 22;
+    const ph = 8 + rnd() * 12;
+    const px = x + 4 + rnd() * (w - pw - 8);
+    const py = y + 3 + rnd() * (h - ph - 6);
+
+    ctx.fillStyle = '#000';
+    ctx.fillRect(px - 2, py - 2, pw + 4, ph + 4);
+    ctx.fillStyle = ['#2a6fc4','#6fb8ee','#4a95dd','#1a4d8f'][Math.floor(rnd()*4)];
+    ctx.fillRect(px, py, pw, ph);
+
+    ctx.fillStyle = 'rgba(200,235,255,0.9)';
+    ctx.fillRect(px + 1, py + 1, pw - 2, 2);
+  }
+
+  ctx.fillStyle = 'rgba(220, 245, 255, 0.6)';
+  ctx.fillRect(x + 4, y + 3, w - 8, 3);
+}
+
+function update() {
+  frame++;
+
+  if (state === 'ready') {
+    bird.y = H / 2 + Math.sin(frame / 15) * 8;
+    bird.rot = 0;
+  }
+
+  if (state === 'play') {
+    bird.vy += GRAVITY;
+    if (bird.vy > MAX_FALL) bird.vy = MAX_FALL;
+    bird.y += bird.vy;
+
+    const targetRot = Math.max(-0.5, Math.min(1.2, bird.vy / 10));
+    bird.rot += (targetRot - bird.rot) * 0.2;
+
+    if (frame % PIPE_INTERVAL === 0) spawnPipe();
+
+    for (let i = pipes.length - 1; i >= 0; i--) {
+      const p = pipes[i];
+      p.x -= PIPE_SPEED;
+
+      if (!p.passed && p.x + PIPE_W < bird.x - bird.r) {
+        p.passed = true;
+        score++;
+        hud.textContent = score;
+      }
+
+      if (p.x + PIPE_W < -20) pipes.splice(i, 1);
+
+      const bx1 = bird.x - bird.r, bx2 = bird.x + bird.r;
+      const by1 = bird.y - bird.r, by2 = bird.y + bird.r;
+      const px1 = p.x, px2 = p.x + PIPE_W;
+      const gy1 = p.top, gy2 = p.top + GAP;
+
+      if (bx2 > px1 && bx1 < px2) {
+        if (by1 < gy1 || by2 > gy2) gameOver();
+      }
+    }
+
+    if (bird.y + bird.r >= H || bird.y - bird.r <= 0) gameOver();
+  }
+}
+
+function gameOver() {
+  state = 'over';
+  msg.innerHTML = '💥 Игра окончена<br>Очки: ' + score + '<br><small>Тапни, чтобы заново</small>';
+}
+
+function drawBird() {
+  ctx.save();
+  ctx.translate(bird.x, bird.y);
+  ctx.rotate(bird.rot);
+
+  ctx.fillStyle = '#ffd93b';
+  ctx.beginPath();
+  ctx.arc(0, 0, bird.r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#c9a800';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(6, -5, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#000';
+  ctx.beginPath();
+  ctx.arc(8, -5, 2.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#ff8c00';
+  ctx.beginPath();
+  ctx.moveTo(12, 0);
+  ctx.lineTo(22, 3);
+  ctx.lineTo(12, 8);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#f0b400';
+  ctx.beginPath();
+  ctx.ellipse(-3, 3, 8, 5, -0.3, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function drawPipes() {
+  for (const p of pipes) {
+    const bottomY = p.top + GAP;
+
+    drawGraffiti(p.x, 0, PIPE_W, p.top - 26, p.seed);
+    drawCap(p.x - 7, p.top - 26, PIPE_W + 14, 26, p.seed);
+
+    drawCap(p.x - 7, bottomY, PIPE_W + 14, 26, p.seed + 500);
+    drawGraffiti(p.x, bottomY + 26, PIPE_W, H - bottomY - 26, p.seed + 500);
+  }
+}
+
+function drawGround() {
+  const gh = 60;
+  ctx.fillStyle = '#ded895';
+  ctx.fillRect(0, H - gh, W, gh);
+  ctx.fillStyle = '#c9b85c';
+  ctx.fillRect(0, H - gh, W, 6);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#4ec0ca');
+  grad.addColorStop(1, '#8ee0e8');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  drawPipes();
+  drawGround();
+  drawBird();
+}
+
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+
+reset();
+loop();
+</script>
+</body>
+</html>
