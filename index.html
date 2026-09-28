@@ -3,44 +3,511 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-<title>Flappy Shiba</title>
+<title>Flappy Shiba ULTRA</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html,body {
-    height:100%; overflow:hidden;
-    background:#4ec0ca;
-    font-family:Arial,sans-serif;
-    touch-action:none; user-select:none;
-    -webkit-user-select:none;
-  }
+  * { margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
+  html,body { height:100%; overflow:hidden; background:#4ec0ca; touch-action:none; user-select:none; -webkit-user-select:none; }
   #game { display:block; margin:0 auto; background:#4ec0ca; touch-action:none; }
-  #hud {
-    position:fixed; top:10px; left:0; right:0;
-    text-align:center; color:#fff;
-    font-size:34px; font-weight:bold;
-    text-shadow:3px 3px 0 #000;
-    pointer-events:none; z-index:10;
-  }
-  #msg {
-    position:fixed; top:50%; left:50%;
-    transform:translate(-50%,-50%);
-    color:#fff; font-size:26px; font-weight:bold;
-    text-align:center; text-shadow:2px 2px 0 #000;
-    pointer-events:none; z-index:10; line-height:1.6;
-  }
+  #hud { position:fixed; top:10px; left:0; right:0; text-align:center; color:#fff; font-size:34px; font-weight:bold; text-shadow:3px 3px 0 #000; pointer-events:none; z-index:10; }
+  #msg { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); color:#fff; font-size:24px; font-weight:bold; text-align:center; text-shadow:2px 2px 0 #000; pointer-events:none; z-index:10; line-height:1.6; }
+  #progress-bar { position:fixed; top:50px; left:50%; transform:translateX(-50%); width:200px; height:6px; background:rgba(0,0,0,0.3); border-radius:3px; z-index:10; pointer-events:none; display:none; }
+  #progress-fill { height:100%; background:linear-gradient(90deg,#ffd93b,#ff8c00); border-radius:3px; width:0%; transition:width 0.2s; }
+  #combo-text { position:fixed; top:70px; left:50%; transform:translateX(-50%); color:#ffd93b; font-size:22px; font-weight:900; text-shadow:3px 3px 0 #000; pointer-events:none; z-index:10; display:none; }
+  #ach-toast {
+  position:fixed;
+  top:-120px;
+  left:50%;
+  transform:translateX(-50%);
+  background:linear-gradient(180deg, #ffd93b 0%, #d69a00 100%);
+  border:4px solid #fff;
+  border-radius:18px;
+  padding:12px 20px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.4);
+  z-index:9999;
+  pointer-events:none;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:260px;
+  max-width:90%;
+  transition:top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  opacity:0;
+}
+#ach-toast.show {
+  top:20px;
+  opacity:1;
+}
+#ach-toast .t-icon { font-size:36px; }
+#ach-toast .t-info { flex:1; }
+#ach-toast .t-title { font-size:13px; font-weight:900; color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.4); letter-spacing:1px; }
+#ach-toast .t-name { font-size:17px; font-weight:900; color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.4); margin-top:2px; }
+#ach-toast .t-desc { font-size:12px; color:#fff; opacity:0.9; margin-top:2px; }
+  .screen { position:fixed; inset:0; background:linear-gradient(180deg, #4ec0ca 0%, #8ee0e8 100%); z-index:100; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:20px; overflow-y:auto; }
+  .hidden { display:none !important; }
+
+  .menu-title { color:#fff; font-size:40px; font-weight:900; text-shadow:4px 4px 0 #000; margin:20px 0 6px; letter-spacing:2px; text-align:center; }
+  .menu-sub { color:#fff; font-size:15px; font-weight:bold; text-shadow:2px 2px 0 #000; margin-bottom:16px; text-align:center; opacity:0.9; }
+  .stat-badge { display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; justify-content:center; }
+  .stat-box { background:rgba(0,0,0,0.35); border:3px solid #fff; border-radius:16px; padding:8px 12px; color:#fff; font-weight:bold; text-align:center; min-width:80px; box-shadow:0 4px 0 rgba(0,0,0,0.3); }
+  .stat-box .lbl { font-size:10px; opacity:0.85; letter-spacing:1px; }
+  .stat-box .val { font-size:18px; margin-top:2px; }
+
+  .btn { display:block; width:260px; padding:13px 18px; margin:5px 0; font-size:19px; font-weight:900; color:#fff; background:linear-gradient(180deg, #ffb347 0%, #ff8c00 100%); border:4px solid #fff; border-radius:16px; box-shadow:0 5px 0 #b35900, 0 7px 10px rgba(0,0,0,0.3); cursor:pointer; text-shadow:2px 2px 0 rgba(0,0,0,0.3); -webkit-tap-highlight-color:transparent; }
+  .btn:active { transform:translateY(4px); box-shadow:0 1px 0 #b35900, 0 2px 4px rgba(0,0,0,0.3); }
+  .btn.blue  { background:linear-gradient(180deg, #4ca3ff 0%, #1e6fd6 100%); box-shadow:0 5px 0 #124a99; }
+  .btn.green { background:linear-gradient(180deg, #6bd66b 0%, #38a338 100%); box-shadow:0 5px 0 #1f6b1f; }
+  .btn.gray  { background:linear-gradient(180deg, #bbb 0%, #888 100%); box-shadow:0 5px 0 #555; }
+  .btn.purple{ background:linear-gradient(180deg, #b56bff 0%, #7a2fd6 100%); box-shadow:0 5px 0 #4a1a99; }
+  .btn.small { width:auto; padding:8px 14px; font-size:13px; }
+
+  .header-row { width:100%; max-width:420px; display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+  .header-row h2 { color:#fff; font-size:24px; font-weight:900; text-shadow:3px 3px 0 #000; }
+  .coins-badge { background:linear-gradient(180deg, #ffd93b 0%, #d69a00 100%); border:3px solid #fff; border-radius:14px; padding:5px 12px; color:#fff; font-weight:900; font-size:16px; text-shadow:2px 2px 0 rgba(0,0,0,0.4); box-shadow:0 4px 0 #8a6200; white-space:nowrap; }
+
+  .tab-row { display:flex; gap:6px; margin-bottom:14px; }
+  .tab-btn { padding:8px 14px; font-size:14px; font-weight:900; color:#fff; background:rgba(0,0,0,0.3); border:3px solid #fff; border-radius:12px; cursor:pointer; text-shadow:2px 2px 0 rgba(0,0,0,0.3); -webkit-tap-highlight-color:transparent; }
+  .tab-btn.active { background:linear-gradient(180deg, #ffb347 0%, #ff8c00 100%); }
+
+  .grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; width:100%; max-width:420px; margin-bottom:16px; }
+  .skin-card { background:rgba(255,255,255,0.95); border:4px solid #fff; border-radius:16px; padding:8px 4px; text-align:center; cursor:pointer; box-shadow:0 5px 0 rgba(0,0,0,0.3); -webkit-tap-highlight-color:transparent; }
+  .skin-card:active { transform:translateY(3px); }
+  .skin-card.selected { border-color:#ffd93b; box-shadow:0 5px 0 #b88400, 0 0 0 3px #ffd93b inset; }
+  .skin-card.locked { opacity:0.9; }
+  .skin-card canvas { display:block; margin:0 auto 4px; }
+  .skin-card .name { font-size:13px; font-weight:bold; color:#333; margin-bottom:2px; }
+  .skin-card .price { font-size:12px; font-weight:bold; color:#b88400; }
+  .skin-card .price.owned { color:#2a8a2a; }
+  .skin-card .price.equipped { color:#1e6fd6; }
+
+  .achievement-item { width:100%; max-width:420px; background:rgba(255,255,255,0.95); border:3px solid #fff; border-radius:14px; padding:10px 14px; margin-bottom:8px; display:flex; align-items:center; gap:10px; box-shadow:0 4px 0 rgba(0,0,0,0.3); }
+  .achievement-item.locked { opacity:0.5; }
+  .achievement-item .icon { font-size:28px; }
+  .achievement-item .info { flex:1; }
+  .achievement-item .info .t { font-size:15px; font-weight:900; color:#333; }
+  .achievement-item .info .d { font-size:12px; color:#666; margin-top:2px; }
+  .achievement-item .check { font-size:24px; }
+
+  .leaderboard-item { width:100%; max-width:420px; background:rgba(255,255,255,0.95); border:3px solid #fff; border-radius:14px; padding:10px 14px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 4px 0 rgba(0,0,0,0.3); }
+  .leaderboard-item .rank { font-size:20px; font-weight:900; color:#b88400; min-width:40px; }
+  .leaderboard-item .score { font-size:18px; font-weight:900; color:#333; }
+  .leaderboard-item .date { font-size:11px; color:#888; }
+  .leaderboard-item.gold { background:linear-gradient(180deg,#ffd93b,#d69a00); }
+  .leaderboard-item.gold .rank, .leaderboard-item.gold .score, .leaderboard-item.gold .date { color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.4); }
+  /* Переключатель звука */
+.sound-toggle {
+  position:fixed; top:16px; right:16px;
+  width:50px; height:50px;
+  background:rgba(0,0,0,0.4);
+  border:3px solid #fff; border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px; cursor:pointer; z-index:200;
+  box-shadow:0 4px 0 rgba(0,0,0,0.3);
+  -webkit-tap-highlight-color:transparent;
+  color:#fff; user-select:none;
+}
+.sound-toggle:active { transform:translateY(2px); }
+.sound-toggle.off { opacity:0.55; }
+
+/* Задания */
+.quest-item {
+  width:100%; max-width:420px;
+  background:rgba(255,255,255,0.95);
+  border:3px solid #fff; border-radius:14px;
+  padding:12px 14px; margin-bottom:8px;
+  box-shadow:0 4px 0 rgba(0,0,0,0.3);
+}
+.quest-item.done { background:linear-gradient(180deg,#6bd66b,#38a338); }
+.quest-item .q-title { font-size:15px; font-weight:900; color:#333; margin-bottom:6px; }
+.quest-item.done .q-title { color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.3); }
+.quest-item .q-progress {
+  height:12px; background:rgba(0,0,0,0.15);
+  border-radius:6px; overflow:hidden; margin-bottom:4px;
+}
+.quest-item .q-fill {
+  height:100%; background:linear-gradient(90deg,#ffd93b,#ff8c00);
+  border-radius:6px; transition:width 0.4s;
+}
+.quest-item.done .q-fill { background:#fff; }
+.quest-item .q-info {
+  display:flex; justify-content:space-between;
+  font-size:12px; color:#666; font-weight:bold;
+}
+.quest-item.done .q-info { color:#fff; }
+.quest-item .q-reward { color:#b88400; }
+.quest-item.done .q-reward { color:#fff; }
+
+.daily-timer {
+  width:100%; max-width:420px;
+  background:rgba(0,0,0,0.35);
+  border:3px solid #fff; border-radius:14px;
+  padding:10px 14px; color:#fff;
+  font-weight:900; font-size:14px; text-align:center;
+  box-shadow:0 4px 0 rgba(0,0,0,0.3);
+  margin-bottom:14px;
+  text-shadow:2px 2px 0 rgba(0,0,0,0.4);
+}
 </style>
 </head>
 <body>
 <div id="hud">0</div>
+<div id="sound-toggle" class="sound-toggle">🔊</div>
+<div id="combo-text"></div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+ <div id="ach-toast">
+  <div class="t-icon">🏅</div>
+  <div class="t-info">
+    <div class="t-title">АЧИВКА РАЗБЛОКИРОВАНА!</div>
+    <div class="t-name"></div>
+    <div class="t-desc"></div>
+  </div>
+</div>
+<div id="quest-toast">
+  <div class="t-icon">📋</div>
+  <div class="t-info">
+    <div class="t-title">ЗАДАНИЕ ВЫПОЛНЕНО!</div>
+    <div class="t-name"></div>
+    <div class="t-desc"></div>
+  </div>
+</div>
 <div id="msg">Тапни, чтобы начать</div>
 <canvas id="game"></canvas>
 
+<!-- ГЛАВНОЕ МЕНЮ -->
+<div id="menu" class="screen">
+  <div class="menu-title">FLAPPY SHIBA</div>
+  <div class="menu-sub">🐕 ULTRA EDITION 🦴</div>
+  <div class="stat-badge">
+    <div class="stat-box"><div class="lbl">🏆 РЕКОРД</div><div class="val" id="m-record">0</div></div>
+    <div class="stat-box"><div class="lbl">💰 МОНЕТЫ</div><div class="val" id="m-coins">0</div></div>
+  </div>
+  <button class="btn green" id="btn-play">▶ ОБЫЧНАЯ ИГРА</button>
+  <button class="btn purple" id="btn-2p">👥 2 ИГРОКА</button>
+  <button class="btn" id="btn-night">🌑 БЕСКОНЕЧНАЯ НОЧЬ</button>
+  <button class="btn blue" id="btn-shop">🛒 МАГАЗИН</button>
+  <button class="btn blue" id="btn-ach">🏅 АЧИВКИ</button>
+  <button class="btn blue" id="btn-top">🏆 ТОП-5</button>
+  <button class="btn blue" id="btn-daily">📋 ЗАДАНИЯ</button>
+  <button class="btn gray small" id="btn-reset" style="margin-top:8px;">🗑 Сбросить прогресс</button>
+</div>
+
+<!-- МАГАЗИН -->
+<div id="shop" class="screen hidden">
+  <div class="header-row">
+    <h2>🛒 МАГАЗИН</h2>
+    <div class="coins-badge">💰 <span id="shop-coins">0</span></div>
+  </div>
+  <div class="tab-row">
+    <button class="tab-btn active" id="tab-skins">🐕 Скины</button>
+    <button class="tab-btn" id="tab-bgs">🎨 Фоны</button>
+  </div>
+  <div class="grid" id="shop-grid"></div>
+  <button class="btn gray" id="btn-shop-back">← НАЗАД</button>
+</div>
+
+<!-- АЧИВКИ -->
+<div id="ach" class="screen hidden">
+  <div class="header-row">
+    <h2>🏅 АЧИВКИ</h2>
+    <div class="coins-badge" id="ach-count">0/10</div>
+  </div>
+  <div id="ach-list" style="width:100%; max-width:420px;"></div>
+  <button class="btn gray" id="btn-ach-back">← НАЗАД</button>
+</div>
+
+<!-- ТОП-5 -->
+<div id="top" class="screen hidden">
+  <div class="header-row">
+    <h2>🏆 ТОП-5</h2>
+  </div>
+  <div id="top-list" style="width:100%; max-width:420px;"></div>
+  <button class="btn gray" id="btn-top-back">← НАЗАД</button>
+</div>
+<!-- ЕЖЕДНЕВНЫЕ ЗАДАНИЯ -->
+<div id="daily" class="screen hidden">
+  <div class="header-row">
+    <h2>📋 ЗАДАНИЯ</h2>
+    <div class="coins-badge">💰 <span id="daily-coins">0</span></div>
+  </div>
+  <div class="daily-timer" id="daily-timer">Обновление через: --:--:--</div>
+  <div id="quest-list" style="width:100%; max-width:420px;"></div>
+  <button class="btn gray" id="btn-daily-back">← НАЗАД</button>
+</div>
 <script>
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const hud = document.getElementById('hud');
 const msg = document.getElementById('msg');
+const menu = document.getElementById('menu');
+const shop = document.getElementById('shop');
+const ach = document.getElementById('ach');
+const topEl = document.getElementById('top');
+const shopGrid = document.getElementById('shop-grid');
+const mRecord = document.getElementById('m-record');
+const mCoins = document.getElementById('m-coins');
+const shopCoins = document.getElementById('shop-coins');
+const progressBar = document.getElementById('progress-bar');
+const progressFill = document.getElementById('progress-fill');
+const comboText = document.getElementById('combo-text');
+// ===== НОВЫЕ ССЫЛКИ =====
+const soundToggleEl = document.getElementById('sound-toggle');
+const dailyEl = document.getElementById('daily');
+const questList = document.getElementById('quest-list');
+const dailyTimerEl = document.getElementById('daily-timer');
+const dailyCoinsEl = document.getElementById('daily-coins');
 
+// ===== 20 ШАБЛОНОВ ЗАДАНИЙ =====
+// type: 'total' — суммируется за день | 'single' — за один забег
+const QUEST_TEMPLATES = [
+  { type:'total',  target:30,  reward:25, icon:'🦴', text:'Съешь {n} косточек за день',        track:'bones' },
+  { type:'total',  target:75,  reward:40, icon:'🦴', text:'Съешь {n} косточек за день',        track:'bones' },
+  { type:'total',  target:15,  reward:30, icon:'⭐', text:'Собери {n} золотых косточек',       track:'gold' },
+  { type:'total',  target:30,  reward:35, icon:'⭐', text:'Собери {n} золотых косточек',       track:'gold' },
+  { type:'total',  target:10,  reward:25, icon:'💰', text:'Поймай {n} монет с неба',           track:'coins' },
+  { type:'total',  target:25,  reward:40, icon:'💰', text:'Поймай {n} монет с неба',           track:'coins' },
+  { type:'total',  target:5,   reward:25, icon:'🧲', text:'Используй {n} магнитов',            track:'magnets' },
+  { type:'total',  target:10,  reward:35, icon:'🧲', text:'Используй {n} магнитов',            track:'magnets' },
+  { type:'total',  target:3,   reward:25, icon:'🛡', text:'Используй {n} щита',                track:'shields' },
+  { type:'total',  target:6,   reward:35, icon:'🛡', text:'Используй {n} щитов',               track:'shields' },
+  { type:'total',  target:5,   reward:30, icon:'🎮', text:'Сыграй {n} игр',                    track:'games' },
+  { type:'total',  target:10,  reward:45, icon:'🎮', text:'Сыграй {n} игр',                    track:'games' },
+  { type:'total',  target:2,   reward:35, icon:'👹', text:'Пролети мимо {n} боссов',           track:'boss' },
+  { type:'total',  target:5,   reward:50, icon:'👹', text:'Пролети мимо {n} боссов',           track:'boss' },
+  { type:'single', target:15,  reward:30, icon:'🏆', text:'Набери {n} очков за один забег',    track:'bestRun' },
+  { type:'single', target:30,  reward:45, icon:'🏆', text:'Набери {n} очков за один забег',    track:'bestRun' },
+  { type:'single', target:50,  reward:60, icon:'🔥', text:'Набери {n} очков за один забег',    track:'bestRun' },
+  { type:'single', target:8,   reward:30, icon:'🔥', text:'Сделай комбо x{n} за забег',        track:'bestCombo' },
+  { type:'total',  target:300, reward:30, icon:'📏', text:'Пролети суммарно {n} очков',        track:'totalScore' },
+  { type:'total',  target:600, reward:50, icon:'📏', text:'Пролети суммарно {n} очков',        track:'totalScore' },
+];
+
+// ===== ДАННЫЕ ЗАДАНИЙ =====
+// quests: массив из 3 объектов { templateIndex, progress, done }
+// dayKey: 'YYYY-MM-DD' текущего дня
+// stats: статистика за день (суммируется)
+let dailyQuests = {
+  dayKey: '',
+  quests: [],
+  stats: { bones:0, gold:0, coins:0, magnets:0, shields:0, games:0, boss:0, totalScore:0 },
+  bestRun: 0,
+  bestCombo: 0
+};
+
+function todayKey() {
+  const d = new Date();
+  return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+}
+
+function loadDaily() {
+  try {
+    const raw = localStorage.getItem('flappy_daily');
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (data && data.dayKey === todayKey()) {
+        dailyQuests = data;
+      }
+    }
+  } catch(e) {}
+  if (dailyQuests.dayKey !== todayKey()) {
+    generateDaily();
+  }
+}
+
+function generateDaily() {
+  // Выбираем 3 случайных шаблона без повторов
+  const used = new Set();
+  const picked = [];
+  while (picked.length < 3) {
+    const idx = Math.floor(Math.random() * QUEST_TEMPLATES.length);
+    if (!used.has(idx)) {
+      used.add(idx);
+      picked.push(idx);
+    }
+  }
+  dailyQuests = {
+    dayKey: todayKey(),
+    quests: picked.map(i => ({ templateIndex: i, progress: 0, done: false })),
+    stats: { bones:0, gold:0, coins:0, magnets:0, shields:0, games:0, boss:0, totalScore:0 },
+    bestRun: 0,
+    bestCombo: 0
+  };
+  writeDaily();
+}
+
+function writeDaily() {
+  try { localStorage.setItem('flappy_daily', JSON.stringify(dailyQuests)); } catch(e) {}
+}
+
+// ===== ПРОГРЕСС ЗАДАНИЙ =====
+function questProgress(q) {
+  const t = QUEST_TEMPLATES[q.templateIndex];
+  if (t.type === 'single') {
+    if (t.track === 'bestRun') return dailyQuests.bestRun;
+    if (t.track === 'bestCombo') return dailyQuests.bestCombo;
+    return 0;
+  }
+  return dailyQuests.stats[t.track] || 0;
+}
+
+function updateQuests() {
+  let changed = false;
+  dailyQuests.quests.forEach(q => {
+    if (q.done) return;
+    const t = QUEST_TEMPLATES[q.templateIndex];
+    const val = questProgress(q);
+    if (val >= t.target) {
+      q.done = true;
+      q.progress = t.target;
+      save.coins += t.reward;
+      save.maxCoins = Math.max(save.maxCoins, save.coins);
+      changed = true;
+      soundBuy();
+      // Показываем красивый тост вместо alert
+      showQuestToast(t);
+      updateMenuUI();
+      if (dailyEl && !dailyEl.classList.contains('hidden')) buildDaily();
+    } else {
+      q.progress = val;
+    }
+  });
+  if (changed) {
+    writeSave();
+    writeDaily();
+  }
+}
+
+// ===== ТОСТ ЗАДАНИЯ (как ачивка, но зелёный) =====
+let questToastQueue = [];
+let questToastShowing = false;
+let questToastTimer = null;
+
+function showQuestToast(t) {
+  questToastQueue.push(t);
+  if (!questToastShowing) processQuestToastQueue();
+}
+
+function processQuestToastQueue() {
+  if (questToastQueue.length === 0) {
+    questToastShowing = false;
+    return;
+  }
+  questToastShowing = true;
+  const t = questToastQueue.shift();
+  const el = document.getElementById('quest-toast');
+  if (!el) { questToastShowing = false; return; }
+
+  el.querySelector('.t-icon').textContent = t.icon;
+  el.querySelector('.t-name').textContent = 'Задание выполнено!';
+  el.querySelector('.t-desc').textContent = t.text.replace('{n}', t.target) + '  •  +' + t.reward + ' 💰';
+  el.classList.add('show');
+
+  if (questToastTimer) clearTimeout(questToastTimer);
+  questToastTimer = setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => {
+      questToastShowing = false;
+      processQuestToastQueue();
+    }, 550);
+  }, 3000);
+}
+function applyDailyProgress(key, amount) {
+  if (!dailyQuests.stats) return;
+  if (typeof amount === 'undefined') amount = 1;
+  if (typeof dailyQuests.stats[key] === 'number') {
+    dailyQuests.stats[key] += amount;
+  }
+  updateQuests();
+}
+
+function registerRunEnd(runScore, runCombo) {
+  dailyQuests.stats.games = (dailyQuests.stats.games || 0) + 1;
+  dailyQuests.stats.totalScore = (dailyQuests.stats.totalScore || 0) + runScore;
+  if (runScore > (dailyQuests.bestRun || 0)) dailyQuests.bestRun = runScore;
+  if (runCombo > (dailyQuests.bestCombo || 0)) dailyQuests.bestCombo = runCombo;
+  writeDaily();
+  updateQuests();
+}
+
+// ===== ОТРИСОВКА ЭКРАНА ЗАДАНИЙ =====
+function buildDaily() {
+  if (!questList) return;
+  questList.innerHTML = '';
+  dailyCoinsEl.textContent = save.coins;
+  updateDailyTimer();
+
+  dailyQuests.quests.forEach(q => {
+    const t = QUEST_TEMPLATES[q.templateIndex];
+    const val = Math.min(questProgress(q), t.target);
+    const pct = Math.round((val / t.target) * 100);
+
+    const div = document.createElement('div');
+    div.className = 'quest-item' + (q.done ? ' done' : '');
+    div.innerHTML =
+      '<div class="q-title">' + t.icon + ' ' + t.text.replace('{n}', t.target) + '</div>' +
+      '<div class="q-progress"><div class="q-fill" style="width:' + pct + '%"></div></div>' +
+      '<div class="q-info">' +
+        '<span>' + (q.done ? '✓ ГОТОВО' : val + ' / ' + t.target) + '</span>' +
+        '<span class="q-reward">' + (q.done ? '✓' : '💰 +' + t.reward) + '</span>' +
+      '</div>';
+    questList.appendChild(div);
+  });
+}
+
+function updateDailyTimer() {
+  if (!dailyTimerEl) return;
+  const now = new Date();
+  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  const diff = tomorrow - now;
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  dailyTimerEl.textContent = 'Обновление через: ' +
+    String(h).padStart(2,'0') + ':' +
+    String(m).padStart(2,'0') + ':' +
+    String(s).padStart(2,'0');
+}
+setInterval(updateDailyTimer, 1000);
+
+// ===== ЗВУК: ВКЛ/ВЫКЛ =====
+let soundEnabled = true;
+try {
+  const se = localStorage.getItem('flappy_sound');
+  if (se === 'off') soundEnabled = false;
+} catch(e) {}
+
+function updateSoundIcon() {
+  if (!soundToggleEl) return;
+  soundToggleEl.textContent = soundEnabled ? '🔊' : '🔇';
+  if (soundEnabled) soundToggleEl.classList.remove('off');
+  else soundToggleEl.classList.add('off');
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  try { localStorage.setItem('flappy_sound', soundEnabled ? 'on' : 'off'); } catch(e) {}
+  if (!soundEnabled) stopMusic();
+  updateSoundIcon();
+}
+
+soundToggleEl && soundToggleEl.addEventListener('click', toggleSound);
+
+// Обёртки звуков — учитывают soundEnabled
+const _soundBark = soundBark;
+const _soundScore = soundScore;
+const _soundCoin = soundCoin;
+const _soundBoss = soundBoss;
+const _soundGameOver = soundGameOver;
+const _soundBuy = soundBuy;
+const _soundAchievement = soundAchievement;
+const _startMusic = startMusic;
+
+soundBark = function(){ if (soundEnabled) _soundBark(); };
+soundScore = function(){ if (soundEnabled) _soundScore(); };
+soundCoin = function(){ if (soundEnabled) _soundCoin(); };
+soundBoss = function(){ if (soundEnabled) _soundBoss(); };
+soundGameOver = function(){ if (soundEnabled) _soundGameOver(); };
+soundBuy = function(){ if (soundEnabled) _soundBuy(); };
+soundAchievement = function(){ if (soundEnabled) _soundAchievement(); };
+startMusic = function(){ if (soundEnabled) _startMusic(); };
 let W, H;
 function resize() {
   W = canvas.width = window.innerWidth;
@@ -49,21 +516,94 @@ function resize() {
 resize();
 window.addEventListener('resize', () => { resize(); reset(); });
 
+// ===== СКИНЫ =====
+const SKINS = [
+  { id:'orange', name:'Рыжий',      price:0,   body:'#e09540', body2:'#f5b860', body3:'#ffd28a', belly:'#fffaf0', ear:'#e09540', innerEar:'#ffa8a0' },
+  { id:'black',  name:'Чёрный',     price:50,  body:'#3a3a3a', body2:'#5a5a5a', body3:'#7a7a7a', belly:'#e8e8e8', ear:'#3a3a3a', innerEar:'#ffa8a0' },
+  { id:'white',  name:'Белый',      price:80,  body:'#e8e0d0', body2:'#f5efe0', body3:'#ffffff', belly:'#ffffff', ear:'#e8e0d0', innerEar:'#ffc0c0' },
+  { id:'husky',  name:'Хаски',      price:150, body:'#5a6a7a', body2:'#7a8a9a', body3:'#9aaaba', belly:'#ffffff', ear:'#5a6a7a', innerEar:'#ffa8a0' },
+  { id:'dalmat', name:'Далматинец', price:200, body:'#f0f0f0', body2:'#ffffff', body3:'#ffffff', belly:'#ffffff', ear:'#f0f0f0', innerEar:'#ffa8a0', spots:true },
+  { id:'gold',   name:'Золотой',    price:300, body:'#c9a227', body2:'#e8c547', body3:'#ffd93b', belly:'#fff5c0', ear:'#c9a227', innerEar:'#ffd0d0' },
+  { id:'chihuahua', name:'Чихуахуа', price:120, body:'#d4a574', body2:'#e8c094', body3:'#f5dcb8', belly:'#fffaf0', ear:'#c99460', innerEar:'#ffb0b0', chihuahua:true },
+];
+
+// ===== ФОНЫ =====
+const BACKGROUNDS = [
+  { id:'day',    name:'День',    price:0,   top:'#4ec0ca', bottom:'#8ee0e8' },
+  { id:'sunset', name:'Закат',   price:100, top:'#ff8c42', bottom:'#ffd93b' },
+  { id:'night',  name:'Ночь',    price:150, top:'#1a1a3a', bottom:'#3a3a6a' },
+  { id:'space',  name:'Космос',  price:250, top:'#0a0a2a', bottom:'#2a1a4a' },
+  { id:'forest', name:'Лес',     price:200, top:'#2a5a2a', bottom:'#7ab87a' },
+  { id:'beach',  name:'Пляж',    price:180, top:'#5ec4ff', bottom:'#ffe4a0' },
+];
+
+// ===== АЧИВКИ =====
+const ACHIEVEMENTS = [
+  { id:'first',     name:'Первая косточка',  desc:'Съешь 1 косточку',         icon:'🦴', check:s => s.totalBones >= 1 },
+  { id:'ten',       name:'Десятка',          desc:'Набери 10 очков',          icon:'🔟', check:s => s.record >= 10 },
+  { id:'fifty',     name:'Полтинник',        desc:'Набери 50 очков',          icon:'💪', check:s => s.record >= 50 },
+  { id:'hundred',   name:'Сотка',            desc:'Набери 100 очков',         icon:'💯', check:s => s.record >= 100 },
+  { id:'collector', name:'Коллекционер',     desc:'Купи все скины',           icon:'🐕', check:s => s.owned.length >= SKINS.length },
+  { id:'rich',      name:'Магнат',           desc:'Накопи 500 монет',         icon:'💰', check:s => s.coins >= 500 || s.maxCoins >= 500 },
+  { id:'boss',      name:'Победитель босса', desc:'Пролети мимо босса',       icon:'👹', check:s => s.bossKilled >= 1 },
+  { id:'magnet',    name:'Магнит',           desc:'Собери 5 магнитов',        icon:'🧲', check:s => s.magnets >= 5 },
+  { id:'shield',    name:'Щит',              desc:'Используй 3 щита',         icon:'🛡', check:s => s.shieldsUsed >= 3 },
+  { id:'daily',     name:'Каждый день',      desc:'Получи 3 ежедневные награды', icon:'🎁', check:s => s.dailyCount >= 3 },
+];
+
+// ===== СОХРАНЕНИЕ =====
+let save = {
+  record: 0, coins: 0, maxCoins: 0,
+  owned: ['orange'], current: 'orange',
+  bgOwned: ['day'], bgCurrent: 'day',
+  achievements: [],
+  topScores: [],
+  lastDaily: 0, dailyCount: 0,
+  totalBones: 0, bossKilled: 0, magnets: 0, shieldsUsed: 0
+};
+
+function loadSave() {
+  try {
+    const raw = localStorage.getItem('flappy_shiba_ultra');
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (data && typeof data === 'object') {
+        Object.assign(save, data);
+        if (!save.owned.includes(save.current)) save.current = 'orange';
+        if (!save.bgOwned.includes(save.bgCurrent)) save.bgCurrent = 'day';
+        if (!Array.isArray(save.topScores)) save.topScores = [];
+        if (!Array.isArray(save.achievements)) save.achievements = [];
+      }
+    }
+  } catch(e) {}
+}
+function writeSave() {
+  try { localStorage.setItem('flappy_shiba_ultra', JSON.stringify(save)); } catch(e) {}
+}
+function getSkin() { return SKINS.find(s => s.id === save.current) || SKINS[0]; }
+function getBG() { return BACKGROUNDS.find(b => b.id === save.bgCurrent) || BACKGROUNDS[0]; }
+
 // ===== ФИЗИКА =====
-const GRAVITY       = 0.5;
-const JUMP          = -7.5;
-const MAX_FALL      = 10;
-const PIPE_W        = 70;
-const GAP           = 220;
-const PIPE_SPEED    = 3;
+const GRAVITY = 0.5;
+const JUMP = -7.5;
+const MAX_FALL = 10;
+const PIPE_W = 70;
+const GAP = 220;
+const PIPE_SPEED = 3;
 const PIPE_INTERVAL = 90;
 
-let bird, pipes, score, frame, state;
+let bird, bird2, pipes, score, frame, state, mode;
+let speedMultiplier = 1;
+let timeOfDay = 'day';
+let petX = 0, petY = 0, petFrame = 0;
+let fallingCoins = [];
+let combo = 0, comboTimer = 0;
+let shield = 0, magnet = 0;
+let bossMode = false, bossX = 0, bossHP = 0;
+let player2Mode = false;
 
-// ===== МЯГКИЕ ЗВУКИ =====
-let audioCtx = null;
-let musicPlaying = false;
-let musicTimer = null;
+// ===== ЗВУКИ =====
+let audioCtx = null, musicPlaying = false, musicTimer = null;
 
 function initAudio() {
   if (!audioCtx) {
@@ -74,26 +614,22 @@ function initAudio() {
 }
 
 function soundBark() {
-  initAudio();
-  if (!audioCtx) return;
+  initAudio(); if (!audioCtx) return;
   const t = audioCtx.currentTime;
-  const o1 = audioCtx.createOscillator();
-  const g1 = audioCtx.createGain();
+  const o1 = audioCtx.createOscillator(), g1 = audioCtx.createGain();
   o1.type = 'sine';
   o1.frequency.setValueAtTime(260, t);
   o1.frequency.exponentialRampToValueAtTime(160, t + 0.14);
-  g1.gain.setValueAtTime(0.0, t);
+  g1.gain.setValueAtTime(0, t);
   g1.gain.linearRampToValueAtTime(0.06, t + 0.02);
   g1.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
   o1.connect(g1); g1.connect(audioCtx.destination);
   o1.start(t); o1.stop(t + 0.18);
-
-  const o2 = audioCtx.createOscillator();
-  const g2 = audioCtx.createGain();
+  const o2 = audioCtx.createOscillator(), g2 = audioCtx.createGain();
   o2.type = 'sine';
   o2.frequency.setValueAtTime(340, t + 0.1);
   o2.frequency.exponentialRampToValueAtTime(200, t + 0.24);
-  g2.gain.setValueAtTime(0.0, t + 0.1);
+  g2.gain.setValueAtTime(0, t + 0.1);
   g2.gain.linearRampToValueAtTime(0.05, t + 0.12);
   g2.gain.exponentialRampToValueAtTime(0.001, t + 0.26);
   o2.connect(g2); g2.connect(audioCtx.destination);
@@ -101,39 +637,90 @@ function soundBark() {
 }
 
 function soundScore() {
-  initAudio();
-  if (!audioCtx) return;
+  initAudio(); if (!audioCtx) return;
   const t = audioCtx.currentTime;
   [880, 1174].forEach((f, i) => {
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.type = 'sine';
-    o.frequency.value = f;
-    const start = t + i * 0.08;
-    g.gain.setValueAtTime(0.0, start);
-    g.gain.linearRampToValueAtTime(0.06, start + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.001, start + 0.2);
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    const s = t + i * 0.08;
+    g.gain.setValueAtTime(0, s);
+    g.gain.linearRampToValueAtTime(0.06, s + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, s + 0.2);
     o.connect(g); g.connect(audioCtx.destination);
-    o.start(start); o.stop(start + 0.22);
+    o.start(s); o.stop(s + 0.22);
   });
 }
 
-function soundGameOver() {
-  initAudio();
-  if (!audioCtx) return;
+function soundCoin() {
+  initAudio(); if (!audioCtx) return;
   const t = audioCtx.currentTime;
-  const notes = [440, 392, 330, 262];
-  notes.forEach((f, i) => {
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.type = 'sine';
-    o.frequency.value = f;
-    const start = t + i * 0.13;
-    g.gain.setValueAtTime(0.0, start);
-    g.gain.linearRampToValueAtTime(0.07, start + 0.03);
-    g.gain.exponentialRampToValueAtTime(0.001, start + 0.25);
+  [1318, 1760].forEach((f, i) => {
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = 'triangle'; o.frequency.value = f;
+    const s = t + i * 0.06;
+    g.gain.setValueAtTime(0, s);
+    g.gain.linearRampToValueAtTime(0.07, s + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, s + 0.18);
     o.connect(g); g.connect(audioCtx.destination);
-    o.start(start); o.stop(start + 0.28);
+    o.start(s); o.stop(s + 0.2);
+  });
+}
+
+function soundBoss() {
+  initAudio(); if (!audioCtx) return;
+  const t = audioCtx.currentTime;
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = 'sawtooth';
+  o.frequency.setValueAtTime(80, t);
+  o.frequency.exponentialRampToValueAtTime(40, t + 0.6);
+  g.gain.setValueAtTime(0.1, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start(t); o.stop(t + 0.65);
+}
+
+function soundGameOver() {
+  initAudio(); if (!audioCtx) return;
+  const t = audioCtx.currentTime;
+  [440, 392, 330, 262].forEach((f, i) => {
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    const s = t + i * 0.13;
+    g.gain.setValueAtTime(0, s);
+    g.gain.linearRampToValueAtTime(0.07, s + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.001, s + 0.25);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(s); o.stop(s + 0.28);
+  });
+}
+
+function soundBuy() {
+  initAudio(); if (!audioCtx) return;
+  const t = audioCtx.currentTime;
+  [659, 784, 988, 1318].forEach((f, i) => {
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = 'triangle'; o.frequency.value = f;
+    const s = t + i * 0.07;
+    g.gain.setValueAtTime(0, s);
+    g.gain.linearRampToValueAtTime(0.07, s + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, s + 0.2);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(s); o.stop(s + 0.22);
+  });
+}
+
+function soundAchievement() {
+  initAudio(); if (!audioCtx) return;
+  const t = audioCtx.currentTime;
+  [523, 659, 784, 1047, 1318].forEach((f, i) => {
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    const s = t + i * 0.1;
+    g.gain.setValueAtTime(0, s);
+    g.gain.linearRampToValueAtTime(0.08, s + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.001, s + 0.3);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(s); o.stop(s + 0.35);
   });
 }
 
@@ -142,19 +729,16 @@ function startMusic() {
   if (!audioCtx || musicPlaying) return;
   musicPlaying = true;
   const master = audioCtx.createGain();
-  master.gain.value = 0.015;
+  master.gain.value = 0.012;
   master.connect(audioCtx.destination);
-  const notes = [523, 587, 659, 587, 523, 494, 523, 587,
-                 659, 784, 659, 587, 523, 494, 440, 494];
+  const notes = [523, 587, 659, 587, 523, 494, 523, 587, 659, 784, 659, 587, 523, 494, 440, 494];
   let i = 0;
   function tick() {
     if (!musicPlaying) return;
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.type = 'sine';
-    o.frequency.value = notes[i % notes.length];
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = 'sine'; o.frequency.value = notes[i % notes.length];
     const t = audioCtx.currentTime;
-    g.gain.setValueAtTime(0.0, t);
+    g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(0.5, t + 0.05);
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
     o.connect(g); g.connect(master);
@@ -164,22 +748,82 @@ function startMusic() {
   }
   tick();
 }
-
 function stopMusic() {
   musicPlaying = false;
   if (musicTimer) { clearTimeout(musicTimer); musicTimer = null; }
 }
-
-// ===== ИГРА =====
+  // ===== ИГРА =====
 function reset() {
   bird = { x: W * 0.28, y: H / 2, r: 22, vy: 0, rot: 0, tailWag: 0 };
+  bird2 = { x: W * 0.28, y: H / 2, r: 22, vy: 0, rot: 0, tailWag: 0, alive: true };
   pipes = [];
+  fallingCoins = [];
   score = 0;
   frame = 0;
   state = 'ready';
+  speedMultiplier = 1;
+  timeOfDay = 'day';
+  combo = 0; comboTimer = 0;
+  shield = 0; magnet = 0;
+  bossMode = false; bossX = 0; bossHP = 0;
+  player2Mode = false;
+  petX = W * 0.28 - 30;
+  petY = H / 2 + 20;
+  petFrame = 0;
   hud.textContent = '0';
+  comboText.style.display = 'none';
+  progressBar.style.display = 'none';
   msg.textContent = 'Тапни, чтобы начать';
   stopMusic();
+}
+
+function updateMenuUI() {
+  mRecord.textContent = save.record;
+  mCoins.textContent = save.coins;
+  shopCoins.textContent = save.coins;
+  const earned = save.achievements.length;
+  document.getElementById('ach-count').textContent = earned + '/' + ACHIEVEMENTS.length;
+}
+
+function showMenu() {
+  stopMusic();
+  menu.classList.remove('hidden');
+  shop.classList.add('hidden');
+  ach.classList.add('hidden');
+  topEl.classList.add('hidden');
+  reset();
+  updateMenuUI();
+  checkDailyReward();
+}
+
+function showShop() {
+  menu.classList.add('hidden');
+  shop.classList.remove('hidden');
+  buildShop('skins');
+  updateMenuUI();
+}
+
+function showAchievements() {
+  menu.classList.add('hidden');
+  ach.classList.remove('hidden');
+  buildAchievements();
+}
+
+function showTop() {
+  menu.classList.add('hidden');
+  topEl.classList.remove('hidden');
+  buildTop();
+}
+
+function startGame(modeName) {
+  menu.classList.add('hidden');
+  shop.classList.add('hidden');
+  ach.classList.add('hidden');
+  topEl.classList.add('hidden');
+  reset();
+  mode = modeName || 'normal';
+  if (mode === '2p') player2Mode = true;
+  if (mode === 'night') timeOfDay = 'night';
 }
 
 function flap() {
@@ -189,91 +833,651 @@ function flap() {
     bird.vy = JUMP;
     soundBark();
     startMusic();
+    if (mode === 'night') timeOfDay = 'night';
   } else if (state === 'play') {
     bird.vy = JUMP;
     soundBark();
   } else if (state === 'over') {
-    reset();
+    showMenu();
   }
 }
 
-canvas.addEventListener('touchstart', e => { e.preventDefault(); flap(); }, {passive:false});
-canvas.addEventListener('mousedown', e => { e.preventDefault(); flap(); });
+function flap2() {
+  if (state === 'play' && player2Mode && bird2.alive) {
+    bird2.vy = JUMP;
+    soundBark();
+  }
+}
+
+// Управление
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  if (menu.classList.contains('hidden') && shop.classList.contains('hidden') && ach.classList.contains('hidden') && topEl.classList.contains('hidden')) flap();
+}, {passive:false});
+canvas.addEventListener('mousedown', e => {
+  e.preventDefault();
+  if (menu.classList.contains('hidden') && shop.classList.contains('hidden') && ach.classList.contains('hidden') && topEl.classList.contains('hidden')) flap();
+});
 window.addEventListener('keydown', e => {
-  if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); flap(); }
+  if (e.code === 'Space' || e.code === 'ArrowUp') {
+    e.preventDefault();
+    if (menu.classList.contains('hidden') && shop.classList.contains('hidden') && ach.classList.contains('hidden') && topEl.classList.contains('hidden')) flap();
+  }
+  if (e.code === 'KeyW') {
+    e.preventDefault();
+    flap2();
+  }
 });
 
-// Труба с косточкой ВНУТРИ просвета
+// Кнопки меню
+document.getElementById('btn-play').addEventListener('click', () => startGame('normal'));
+document.getElementById('btn-2p').addEventListener('click', () => startGame('2p'));
+document.getElementById('btn-night').addEventListener('click', () => startGame('night'));
+document.getElementById('btn-shop').addEventListener('click', showShop);
+document.getElementById('btn-ach').addEventListener('click', showAchievements);
+document.getElementById('btn-top').addEventListener('click', showTop);
+document.getElementById('btn-shop-back').addEventListener('click', showMenu);
+document.getElementById('btn-ach-back').addEventListener('click', showMenu);
+document.getElementById('btn-top-back').addEventListener('click', showMenu);
+document.getElementById('btn-reset').addEventListener('click', () => {
+  if (confirm('Сбросить весь прогресс?')) {
+    save = { record:0, coins:0, maxCoins:0, owned:['orange'], current:'orange',
+             bgOwned:['day'], bgCurrent:'day', achievements:[], topScores:[],
+             lastDaily:0, dailyCount:0, totalBones:0, bossKilled:0, magnets:0, shieldsUsed:0 };
+    writeSave();
+    updateMenuUI();
+  }
+});
+
+// Табы магазина
+let currentTab = 'skins';
+document.getElementById('tab-skins').addEventListener('click', () => {
+  currentTab = 'skins';
+  document.getElementById('tab-skins').classList.add('active');
+  document.getElementById('tab-bgs').classList.remove('active');
+  buildShop('skins');
+});
+document.getElementById('tab-bgs').addEventListener('click', () => {
+  currentTab = 'bgs';
+  document.getElementById('tab-bgs').classList.add('active');
+  document.getElementById('tab-skins').classList.remove('active');
+  buildShop('bgs');
+});
+
+function checkDailyReward() {
+  const now = Date.now();
+  const day = 24 * 60 * 60 * 1000;
+  if (now - save.lastDaily > day) {
+    save.lastDaily = now;
+    save.dailyCount = (save.dailyCount || 0) + 1;
+    save.coins += 20;
+    if (save.coins > save.maxCoins) save.maxCoins = save.coins;
+    writeSave();
+    setTimeout(() => {
+      const el = document.getElementById('quest-toast');
+      if (el) {
+        el.querySelector('.t-icon').textContent = '🎁';
+        el.querySelector('.t-name').textContent = 'ЕЖЕДНЕВНЫЙ ПОДАРОК!';
+        el.querySelector('.t-desc').textContent = '+20 монет • День ' + save.dailyCount;
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 3000);
+      }
+      updateMenuUI();
+    }, 300);
+  }
+}
+// ===== ПРЕВЬЮ СОБАЧКИ ДЛЯ МАГАЗИНА =====
+function drawDogPreview(c, skin) {
+  const r = 28;
+  const cx = 45;
+  const cy = 49;
+
+  c.save();
+
+  // Хвост
+  c.save();
+  c.translate(cx - r * 0.85, cy + r * 0.05);
+  c.rotate(-0.8);
+  c.fillStyle = skin.body;
+  c.strokeStyle = '#5a3a1a';
+  c.lineWidth = 1.8;
+  c.beginPath();
+  c.moveTo(0, 0);
+  c.quadraticCurveTo(-r * 0.5, -r * 0.6, -r * 0.9, -r * 1.1);
+  c.quadraticCurveTo(-r * 0.5, -r * 0.7, -r * 0.3, -r * 0.15);
+  c.quadraticCurveTo(-r * 0.2, r * 0.1, 0, 0);
+  c.closePath();
+  c.fill(); c.stroke();
+  c.fillStyle = skin.belly;
+  c.beginPath();
+  c.ellipse(-r * 0.78, -r * 0.95, r * 0.18, r * 0.14, -0.5, 0, Math.PI * 2);
+  c.fill();
+  c.restore();
+
+  // Голова
+  c.fillStyle = skin.body2;
+  c.beginPath();
+  c.arc(cx, cy, r, 0, Math.PI * 2);
+  c.fill();
+  c.strokeStyle = '#5a3a1a';
+  c.lineWidth = 2.2;
+  c.stroke();
+
+  // Пятна
+  if (skin.spots) {
+    c.fillStyle = '#2a2a2a';
+    c.beginPath(); c.ellipse(cx - r*0.4, cy - r*0.15, r*0.15, r*0.12, 0.3, 0, Math.PI*2); c.fill();
+    c.beginPath(); c.ellipse(cx + r*0.5, cy - r*0.5, r*0.13, r*0.10, -0.2, 0, Math.PI*2); c.fill();
+    c.beginPath(); c.ellipse(cx - r*0.2, cy + r*0.6, r*0.10, r*0.08, 0, 0, Math.PI*2); c.fill();
+  }
+
+  // Уши
+  c.fillStyle = skin.ear;
+  c.strokeStyle = '#5a3a1a';
+  c.lineWidth = 2.2;
+  c.beginPath();
+  c.moveTo(cx - r * 0.75, cy - r * 0.55);
+  c.lineTo(cx - r * 0.35, cy - r * 1.35);
+  c.lineTo(cx - r * 0.05, cy - r * 0.75);
+  c.closePath();
+  c.fill(); c.stroke();
+  c.fillStyle = skin.innerEar;
+  c.beginPath();
+  c.moveTo(cx - r * 0.6, cy - r * 0.6);
+  c.lineTo(cx - r * 0.35, cy - r * 1.15);
+  c.lineTo(cx - r * 0.15, cy - r * 0.72);
+  c.closePath();
+  c.fill();
+
+  c.fillStyle = skin.ear;
+  c.beginPath();
+  c.moveTo(cx + r * 0.75, cy - r * 0.55);
+  c.lineTo(cx + r * 0.35, cy - r * 1.35);
+  c.lineTo(cx + r * 0.05, cy - r * 0.75);
+  c.closePath();
+  c.fill(); c.stroke();
+  c.fillStyle = skin.innerEar;
+  c.beginPath();
+  c.moveTo(cx + r * 0.6, cy - r * 0.6);
+  c.lineTo(cx + r * 0.35, cy - r * 1.15);
+  c.lineTo(cx + r * 0.15, cy - r * 0.72);
+  c.closePath();
+  c.fill();
+
+  // Мордочка
+  c.fillStyle = skin.belly;
+  c.beginPath();
+  c.ellipse(cx + r * 0.15, cy + r * 0.35, r * 0.65, r * 0.5, 0, 0, Math.PI * 2);
+  c.fill();
+
+  // Бровки
+  c.fillStyle = skin.belly;
+  c.beginPath();
+  c.ellipse(cx - r * 0.3, cy - r * 0.25, r * 0.22, r * 0.14, -0.3, 0, Math.PI * 2);
+  c.fill();
+  c.beginPath();
+  c.ellipse(cx + r * 0.3, cy - r * 0.28, r * 0.22, r * 0.14, 0.3, 0, Math.PI * 2);
+  c.fill();
+
+  // Глаза
+  c.fillStyle = '#2a1a0a';
+  c.beginPath();
+  c.ellipse(cx - r * 0.3, cy, r * 0.18, r * 0.22, -0.15, 0, Math.PI * 2);
+  c.fill();
+  c.beginPath();
+  c.ellipse(cx + r * 0.3, cy, r * 0.18, r * 0.22, 0.15, 0, Math.PI * 2);
+  c.fill();
+  c.fillStyle = '#fff';
+  c.beginPath(); c.arc(cx - r * 0.25, cy - r * 0.08, r * 0.06, 0, Math.PI * 2); c.fill();
+  c.beginPath(); c.arc(cx + r * 0.35, cy - r * 0.08, r * 0.06, 0, Math.PI * 2); c.fill();
+
+  // Нос
+  c.fillStyle = '#1a0f05';
+  c.beginPath();
+  c.ellipse(cx + r * 0.15, cy + r * 0.28, r * 0.16, r * 0.12, 0, 0, Math.PI * 2);
+  c.fill();
+
+  // Ротик
+  c.strokeStyle = '#1a0f05';
+  c.lineWidth = 1.8;
+  c.lineCap = 'round';
+  c.beginPath();
+  c.moveTo(cx + r * 0.15, cy + r * 0.42);
+  c.quadraticCurveTo(cx + r * 0.05, cy + r * 0.55, cx - r * 0.05, cy + r * 0.42);
+  c.stroke();
+  c.beginPath();
+  c.moveTo(cx + r * 0.15, cy + r * 0.42);
+  c.quadraticCurveTo(cx + r * 0.25, cy + r * 0.55, cx + r * 0.35, cy + r * 0.42);
+  c.stroke();
+
+  // Усики
+  c.fillStyle = '#1a0f05';
+  c.beginPath(); c.arc(cx - r*0.55, cy + r*0.25, r*0.04, 0, Math.PI*2); c.fill();
+  c.beginPath(); c.arc(cx - r*0.6,  cy + r*0.38, r*0.04, 0, Math.PI*2); c.fill();
+  c.beginPath(); c.arc(cx - r*0.52, cy + r*0.48, r*0.04, 0, Math.PI*2); c.fill();
+  c.beginPath(); c.arc(cx + r*0.55, cy + r*0.25, r*0.04, 0, Math.PI*2); c.fill();
+  c.beginPath(); c.arc(cx + r*0.6,  cy + r*0.38, r*0.04, 0, Math.PI*2); c.fill();
+  c.beginPath(); c.arc(cx + r*0.52, cy + r*0.48, r*0.04, 0, Math.PI*2); c.fill();
+
+  // Румянец
+  c.fillStyle = 'rgba(255, 150, 150, 0.45)';
+  c.beginPath(); c.arc(cx - r*0.55, cy + r*0.15, r*0.14, 0, Math.PI*2); c.fill();
+  c.beginPath(); c.arc(cx + r*0.55, cy + r*0.15, r*0.14, 0, Math.PI*2); c.fill();
+
+  c.restore();
+}
+
+
+// ===== МАГАЗИН =====
+function buildShop(tab) {
+  shopGrid.innerHTML = '';
+  const list = tab === 'bgs' ? BACKGROUNDS : SKINS;
+  const owned = tab === 'bgs' ? save.bgOwned : save.owned;
+  const current = tab === 'bgs' ? save.bgCurrent : save.current;
+
+  list.forEach(item => {
+    const isOwned = owned.includes(item.id);
+    const isEquipped = current === item.id;
+
+    const card = document.createElement('div');
+    card.className = 'skin-card';
+    if (isEquipped) card.classList.add('selected');
+    if (!isOwned) card.classList.add('locked');
+
+    if (tab === 'skins') {
+      const c = document.createElement('canvas');
+      c.width = 90; c.height = 90;
+      drawDogPreview(c.getContext('2d'), item);
+      card.appendChild(c);
+    } else {
+      const bg = document.createElement('div');
+      bg.style.width = '80px';
+      bg.style.height = '80px';
+      bg.style.margin = '0 auto 6px';
+      bg.style.borderRadius = '12px';
+      bg.style.background = 'linear-gradient(180deg, ' + item.top + ', ' + item.bottom + ')';
+      bg.style.border = '2px solid #5a3a1a';
+      card.appendChild(bg);
+    }
+
+    const name = document.createElement('div');
+    name.className = 'name';
+    name.textContent = item.name;
+
+    const price = document.createElement('div');
+    price.className = 'price';
+    if (isEquipped) { price.textContent = '✓ НАДЕТО'; price.classList.add('equipped'); }
+    else if (isOwned) { price.textContent = '✓ Куплено'; price.classList.add('owned'); }
+    else { price.textContent = '💰 ' + item.price; }
+
+    card.appendChild(name);
+    card.appendChild(price);
+
+    card.addEventListener('click', () => onItemClick(item, tab));
+    shopGrid.appendChild(card);
+  });
+}
+
+function onItemClick(item, tab) {
+  const owned = tab === 'bgs' ? save.bgOwned : save.owned;
+  const isOwned = owned.includes(item.id);
+
+  if (isOwned) {
+    if (tab === 'bgs') save.bgCurrent = item.id;
+    else save.current = item.id;
+    writeSave();
+    soundBuy();
+    buildShop(tab);
+    return;
+  }
+  if (save.coins >= item.price) {
+    save.coins -= item.price;
+    owned.push(item.id);
+    if (tab === 'bgs') save.bgCurrent = item.id;
+    else save.current = item.id;
+    writeSave();
+    soundBuy();
+    buildShop(tab);
+    updateMenuUI();
+    checkAchievements();
+    } else {
+    const el = document.getElementById('quest-toast');
+    if (el) {
+      el.querySelector('.t-icon').textContent = '💸';
+      el.querySelector('.t-name').textContent = 'Не хватает монет!';
+      el.querySelector('.t-desc').textContent = 'Нужно: ' + item.price + ' • У тебя: ' + save.coins;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 3000);
+    }
+  }
+}
+
+// ===== АЧИВКИ =====
+function buildAchievements() {
+  const list = document.getElementById('ach-list');
+  list.innerHTML = '';
+  ACHIEVEMENTS.forEach(a => {
+    const unlocked = save.achievements.includes(a.id);
+    const div = document.createElement('div');
+    div.className = 'achievement-item' + (unlocked ? '' : ' locked');
+    div.innerHTML = '<div class="icon">' + a.icon + '</div>' +
+      '<div class="info"><div class="t">' + a.name + '</div><div class="d">' + a.desc + '</div></div>' +
+      '<div class="check">' + (unlocked ? '✅' : '🔒') + '</div>';
+    list.appendChild(div);
+  });
+}
+
+function checkAchievements() {
+  let newOnes = [];
+  ACHIEVEMENTS.forEach(a => {
+    if (!save.achievements.includes(a.id) && a.check(save)) {
+      save.achievements.push(a.id);
+      newOnes.push(a);
+      save.coins += 25;
+    }
+  });
+  if (newOnes.length > 0) {
+    writeSave();
+    soundAchievement();
+    newOnes.forEach((a, i) => {
+      setTimeout(() => showAchievementToast(a), i * 900);
+    });
+  }
+}
+
+// ===== ВСПЛЫВАЮЩЕЕ ОКОШКО АЧИВКИ =====
+let achToastTimer = null;
+let achToastQueue = [];
+let achToastShowing = false;
+
+function showAchievementToast(a) {
+  achToastQueue.push(a);
+  if (!achToastShowing) processAchToastQueue();
+}
+
+function processAchToastQueue() {
+  if (achToastQueue.length === 0) {
+    achToastShowing = false;
+    return;
+  }
+  achToastShowing = true;
+  const a = achToastQueue.shift();
+  const el = document.getElementById('ach-toast');
+  if (!el) { achToastShowing = false; return; }
+
+  el.querySelector('.t-icon').textContent = a.icon;
+  el.querySelector('.t-name').textContent = a.name;
+  el.querySelector('.t-desc').textContent = a.desc + '  •  +25 💰';
+  el.classList.add('show');
+
+  if (achToastTimer) clearTimeout(achToastTimer);
+  achToastTimer = setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => {
+      achToastShowing = false;
+      processAchToastQueue();
+    }, 550);
+  }, 3000);
+}
+
+
+// ===== ТОП-5 =====
+function buildTop() {
+  const list = document.getElementById('top-list');
+  list.innerHTML = '';
+  if (!save.topScores || save.topScores.length === 0) {
+    list.innerHTML = '<div style="color:#fff; text-align:center; font-weight:bold; text-shadow:2px 2px 0 #000; padding:40px;">Пока нет рекордов<br>Сыграй первую игру!</div>';
+    return;
+  }
+  save.topScores.forEach((entry, i) => {
+    const div = document.createElement('div');
+    div.className = 'leaderboard-item' + (i === 0 ? ' gold' : '');
+    div.innerHTML = '<div class="rank">#' + (i+1) + '</div>' +
+      '<div class="score">' + entry.score + ' очк.</div>' +
+      '<div class="date">' + entry.date + '</div>';
+    list.appendChild(div);
+  });
+}
+
+function saveScore(s) {
+  if (!save.topScores) save.topScores = [];
+  const date = new Date();
+  const dateStr = date.getDate() + '.' + (date.getMonth()+1) + '.' + date.getFullYear().toString().slice(-2);
+  save.topScores.push({ score: s, date: dateStr });
+  save.topScores.sort((a, b) => b.score - a.score);
+  save.topScores = save.topScores.slice(0, 5);
+}
+
+// ===== СПАВН ТРУБ =====
 function spawnPipe() {
   const minTop = 80;
   const maxTop = H - GAP - 80;
   const top = minTop + Math.random() * (maxTop - minTop);
+
+  let boneType = 'normal';
+  const r = Math.random();
+  if (r < 0.06) boneType = 'shield';
+  else if (r < 0.15) boneType = 'magnet';
+  else if (r < 0.30) boneType = 'gold';
+
   pipes.push({
-    x: W,
-    top: top,
-    passed: false,
+    x: W, top: top, passed: false,
     seed: Math.floor(Math.random() * 99999),
-    // Косточка в центре просвета
-    bone: {
-      x: W + PIPE_W / 2,       // по центру трубы
-      y: top + GAP / 2,        // центр просвета
-      eaten: false             // съедена или нет
-    }
+    bone: { x: W + PIPE_W / 2, y: top + GAP / 2, eaten: false, type: boneType }
   });
+
+  if (Math.random() < 0.25) {
+    fallingCoins.push({
+      x: W + Math.random() * 200,
+      y: -30,
+      vy: 1 + Math.random() * 1.5,
+      got: false
+    });
+  }
 }
 
+// ===== ОБНОВЛЕНИЕ ИГРЫ =====
 function update() {
-  frame++;
+  const inMenu = !menu.classList.contains('hidden') || !shop.classList.contains('hidden') ||
+                 !ach.classList.contains('hidden') || !topEl.classList.contains('hidden');
 
-  if (state === 'ready') {
-    bird.y = H / 2 + Math.sin(frame / 15) * 8;
-    bird.rot = 0;
-    bird.tailWag = Math.sin(frame / 5) * 0.4;
+  if (inMenu) {
+    if (state === 'ready') {
+      frame++;
+      bird.y = H / 2 + Math.sin(frame / 15) * 8;
+      bird.rot = 0;
+      bird.tailWag = Math.sin(frame / 5) * 0.4;
+      petFrame++;
+      petY = H / 2 + 20 + Math.sin(frame / 8) * 5;
+    }
+    return;
   }
 
+  frame++;
+  petFrame++;
+
   if (state === 'play') {
-    // Собачка
+    // ====== Собачка 1 ======
     bird.vy += GRAVITY;
     if (bird.vy > MAX_FALL) bird.vy = MAX_FALL;
     bird.y += bird.vy;
 
-    const targetRot = Math.max(-0.4, Math.min(0.9, bird.vy / 10));
+    let targetRot = Math.max(-0.4, Math.min(0.9, bird.vy / 10));
     bird.rot += (targetRot - bird.rot) * 0.2;
     bird.tailWag = Math.sin(frame / 4) * 0.6;
 
+    // ====== Собачка 2 (режим 2 игрока) ======
+    if (player2Mode && bird2.alive) {
+      bird2.vy += GRAVITY;
+      if (bird2.vy > MAX_FALL) bird2.vy = MAX_FALL;
+      bird2.y += bird2.vy;
+      let t2 = Math.max(-0.4, Math.min(0.9, bird2.vy / 10));
+      bird2.rot += (t2 - bird2.rot) * 0.2;
+      bird2.tailWag = Math.sin(frame / 4) * 0.6;
+      if (bird2.y + bird2.r * 0.7 >= H || bird2.y - bird2.r * 0.7 <= 0) {
+        bird2.alive = false;
+        soundGameOver();
+      }
+    }
+
+    // ====== Питомец ======
+    petX = bird.x - 35;
+    petY = bird.y + 22 + Math.sin(frame / 6) * 3;
+
+    // ====== Ускорение со временем ======
+    speedMultiplier = 1 + Math.floor(score / 10) * 0.15;
+
+    // ====== День/ночь ======
+    if (mode !== 'night') {
+      if (score >= 30) timeOfDay = 'night';
+      else if (score >= 20) timeOfDay = 'sunset';
+      else if (score >= 10) timeOfDay = 'dusk';
+      else timeOfDay = 'day';
+    }
+
+    // ====== Генерация труб ======
     if (frame % PIPE_INTERVAL === 0) spawnPipe();
 
+    // ====== Босс каждые 25 очков ======
+    if (score > 0 && score % 25 === 0 && !bossMode && frame % 30 === 0) {
+      if (!window._lastBossScore || window._lastBossScore !== score) {
+        bossMode = true;
+        bossX = W + 100;
+        bossHP = 3;
+        window._lastBossScore = score;
+        soundBoss();
+        msg.innerHTML = '👹 БОСС!';
+        setTimeout(() => { if (state === 'play') msg.textContent = ''; }, 1200);
+      }
+    }
+
+    // ====== Босс движется ======
+    if (bossMode) {
+      bossX -= PIPE_SPEED * speedMultiplier * 0.7;
+      if (bossX < -150) {
+        bossMode = false;
+        save.bossKilled = (save.bossKilled || 0) + 1;
+        checkAchievements();
+      }
+    }
+
+    // ====== Трубы ======
     for (let i = pipes.length - 1; i >= 0; i--) {
       const p = pipes[i];
-      p.x -= PIPE_SPEED;
-      p.bone.x -= PIPE_SPEED;  // косточка летит вместе с трубой
+      p.x -= PIPE_SPEED * speedMultiplier;
+      p.bone.x -= PIPE_SPEED * speedMultiplier;
 
-      // === Съедание косточки ===
-      if (!p.bone.eaten) {
-        const dx = Math.abs(p.bone.x - bird.x);
-        const dy = Math.abs(p.bone.y - bird.y);
-        if (dx < bird.r + 18 && dy < bird.r + 18) {
-          p.bone.eaten = true;
-          score++;
-          hud.textContent = score;
-          soundScore();
+      // Магнит притягивает косточки
+      if (magnet > 0 && !p.bone.eaten) {
+        const dx = bird.x - p.bone.x;
+        const dy = bird.y - p.bone.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 200) {
+          p.bone.x += dx * 0.05;
+          p.bone.y += dy * 0.05;
         }
       }
 
+      // Съедание косточки
+      if (!p.bone.eaten) {
+        const dx = Math.abs(p.bone.x - bird.x);
+        const dy = Math.abs(p.bone.y - bird.y);
+        if (dx < bird.r + 20 && dy < bird.r + 20) {
+          p.bone.eaten = true;
+          let points = 1;
+          if (p.bone.type === 'gold') { points = 5; save.totalBones = (save.totalBones||0) + 1; }
+          else if (p.bone.type === 'magnet') { magnet = 300; save.magnets = (save.magnets||0) + 1; points = 2; }
+          else if (p.bone.type === 'shield') { shield = 1; save.shieldsUsed = (save.shieldsUsed||0) + 1; points = 2; }
+          else { save.totalBones = (save.totalBones||0) + 1; }
+          score += points;
+          hud.textContent = score;
+          combo++;
+          comboTimer = 60;
+          if (combo >= 3) {
+            comboText.textContent = 'КОМБО x' + combo + '!';
+            comboText.style.display = 'block';
+          }
+          soundScore();
+          checkAchievements();
+        }
+      }
+
+      // Удаление
       if (p.x + PIPE_W < -20) pipes.splice(i, 1);
 
-      // Столкновение собачки с трубой
+      // Столкновение с трубой
       const bx1 = bird.x - bird.r * 0.7, bx2 = bird.x + bird.r * 0.7;
       const by1 = bird.y - bird.r * 0.7, by2 = bird.y + bird.r * 0.7;
       const px1 = p.x, px2 = p.x + PIPE_W;
       const gy1 = p.top, gy2 = p.top + GAP;
 
       if (bx2 > px1 && bx1 < px2) {
-        if (by1 < gy1 || by2 > gy2) gameOver();
+        if (by1 < gy1 || by2 > gy2) {
+          if (shield > 0) { shield = 0; soundCoin(); }
+          else gameOver();
+        }
+      }
+
+      // Столкновение 2-й собачки
+      if (player2Mode && bird2.alive) {
+        const b2x1 = bird2.x - bird2.r * 0.7, b2x2 = bird2.x + bird2.r * 0.7;
+        const b2y1 = bird2.y - bird2.r * 0.7, b2y2 = bird2.y + bird2.r * 0.7;
+        if (b2x2 > px1 && b2x1 < px2) {
+          if (b2y1 < gy1 || b2y2 > gy2) {
+            bird2.alive = false;
+            soundGameOver();
+          }
+        }
       }
     }
 
-    if (bird.y + bird.r * 0.7 >= H || bird.y - bird.r * 0.7 <= 0) gameOver();
+    // ====== Босс столкновение ======
+    if (bossMode) {
+      const bx1 = bird.x - bird.r, bx2 = bird.x + bird.r;
+      const by1 = bird.y - bird.r, by2 = bird.y + bird.r;
+      if (bx2 > bossX && bx1 < bossX + 100) {
+        if (shield > 0) { shield = 0; soundCoin(); }
+        else gameOver();
+      }
+    }
+
+    // ====== Падающие монеты ======
+    for (let i = fallingCoins.length - 1; i >= 0; i--) {
+      const c = fallingCoins[i];
+      if (c.got) { fallingCoins.splice(i, 1); continue; }
+      c.x -= PIPE_SPEED * speedMultiplier * 0.5;
+      c.y += c.vy;
+      if (c.x < -30 || c.y > H) { fallingCoins.splice(i, 1); continue; }
+      const dx = Math.abs(c.x - bird.x);
+      const dy = Math.abs(c.y - bird.y);
+      if (dx < bird.r + 15 && dy < bird.r + 15) {
+        c.got = true;
+        score += 5;
+        hud.textContent = score;
+        soundCoin();
+        fallingCoins.splice(i, 1);
+      }
+    }
+
+    // ====== Таймеры ======
+    if (magnet > 0) magnet--;
+    if (comboTimer > 0) {
+      comboTimer--;
+      if (comboTimer === 0) { combo = 0; comboText.style.display = 'none'; }
+    }
+
+    // ====== Границы ======
+    if (bird.y + bird.r * 0.7 >= H || bird.y - bird.r * 0.7 <= 0) {
+      if (shield > 0) { shield = 0; bird.y = Math.max(bird.r, Math.min(H - bird.r, bird.y)); }
+      else gameOver();
+    }
+
+    // ====== Прогресс-бар до рекорда ======
+    if (save.record > 0) {
+      progressBar.style.display = 'block';
+      const pct = Math.min(100, (score / save.record) * 100);
+      progressFill.style.width = pct + '%';
+    }
   }
 }
 
@@ -281,28 +1485,39 @@ function gameOver() {
   state = 'over';
   stopMusic();
   soundGameOver();
-  msg.innerHTML = '💥 Игра окончена<br>Очки: ' + score + '<br><small>Тапни, чтобы заново</small>';
+
+  save.coins += score;
+  if (save.coins > save.maxCoins) save.maxCoins = save.coins;
+  if (score > save.record) save.record = score;
+  if (score > 0) saveScore(score);
+  checkAchievements();
+  writeSave();
+
+  msg.innerHTML = '💥 Игра окончена<br>Очки: ' + score
+    + '<br>🏆 Рекорд: ' + save.record
+    + '<br>💰 +' + score + ' монет'
+    + '<br><small>Тапни, чтобы в меню</small>';
 }
 
 // ===== КОСТОЧКА =====
-function drawBone(x, y, size, rot) {
+function drawBone(x, y, size, rot, type) {
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(rot || 0);
 
-  const r = size * 0.35;
-  ctx.fillStyle = '#fffaf0';
-  ctx.strokeStyle = '#b8a888';
-  ctx.lineWidth = 2;
+  let fill = '#fffaf0', stroke = '#b8a888';
+  if (type === 'gold')   { fill = '#ffd93b'; stroke = '#a07800'; }
+  if (type === 'magnet') { fill = '#ff5050'; stroke = '#8a1010'; }
+  if (type === 'shield') { fill = '#50c8ff'; stroke = '#0a5a8a'; }
 
+  const r = size * 0.35;
+  ctx.fillStyle = fill;
+  ctx.strokeStyle = stroke;
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  if (ctx.roundRect) {
-    ctx.roundRect(-size/2, -r*0.5, size, r, r*0.4);
-  } else {
-    ctx.rect(-size/2, -r*0.5, size, r);
-  }
-  ctx.fill();
-  ctx.stroke();
+  if (ctx.roundRect) ctx.roundRect(-size/2, -r*0.5, size, r, r*0.4);
+  else ctx.rect(-size/2, -r*0.5, size, r);
+  ctx.fill(); ctx.stroke();
 
   const positions = [
     [-size/2, -r*0.6], [-size/2, r*0.6],
@@ -311,8 +1526,7 @@ function drawBone(x, y, size, rot) {
   for (const [px, py] of positions) {
     ctx.beginPath();
     ctx.arc(px, py, r * 0.7, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
+    ctx.fill(); ctx.stroke();
   }
 
   ctx.fillStyle = 'rgba(255,255,255,0.9)';
@@ -320,22 +1534,31 @@ function drawBone(x, y, size, rot) {
   ctx.arc(-size/2 + 4, -r*0.6, r*0.25, 0, Math.PI*2);
   ctx.fill();
 
+  // Иконка типа
+  if (type && type !== 'normal') {
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 14px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const emoji = type === 'gold' ? '⭐' : type === 'magnet' ? '🧲' : '🛡';
+    ctx.fillText(emoji, 0, 0);
+  }
+
   ctx.restore();
 }
 
 // ===== СОБАЧКА =====
-function drawShiba() {
-  const x = bird.x, y = bird.y, r = bird.r;
-
+function drawDog(x, y, r, rot, tailWag, skin, dead) {
   ctx.save();
+  if (dead) ctx.globalAlpha = 0.4;
   ctx.translate(x, y);
-  ctx.rotate(bird.rot * 0.6);
+  ctx.rotate(rot * 0.6);
 
   // Хвост
   ctx.save();
   ctx.translate(-r * 0.85, r * 0.05);
   ctx.rotate(Math.sin(frame / 5) * 0.5 - 0.8);
-  ctx.fillStyle = '#e09540';
+  ctx.fillStyle = skin.body;
   ctx.strokeStyle = '#5a3a1a';
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -344,21 +1567,19 @@ function drawShiba() {
   ctx.quadraticCurveTo(-r * 0.5, -r * 0.7, -r * 0.3, -r * 0.15);
   ctx.quadraticCurveTo(-r * 0.2, r * 0.1, 0, 0);
   ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.fillStyle = '#fffaf0';
+  ctx.fill(); ctx.stroke();
+  ctx.fillStyle = skin.belly;
   ctx.beginPath();
   ctx.ellipse(-r * 0.78, -r * 0.95, r * 0.18, r * 0.14, -0.5, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 
   // Голова
-  const bodyGrad = ctx.createRadialGradient(-r*0.3, -r*0.4, r*0.2, 0, 0, r*1.1);
-  bodyGrad.addColorStop(0, '#ffd28a');
-  bodyGrad.addColorStop(0.6, '#f5b860');
-  bodyGrad.addColorStop(1, '#e09540');
-  ctx.fillStyle = bodyGrad;
+  const g = ctx.createRadialGradient(-r*0.3, -r*0.4, r*0.2, 0, 0, r*1.1);
+  g.addColorStop(0, skin.body3);
+  g.addColorStop(0.6, skin.body2);
+  g.addColorStop(1, skin.body);
+  ctx.fillStyle = g;
   ctx.beginPath();
   ctx.arc(0, 0, r, 0, Math.PI * 2);
   ctx.fill();
@@ -366,8 +1587,15 @@ function drawShiba() {
   ctx.lineWidth = 2.5;
   ctx.stroke();
 
+  if (skin.spots) {
+    ctx.fillStyle = '#2a2a2a';
+    ctx.beginPath(); ctx.ellipse(-r*0.4, -r*0.15, r*0.15, r*0.12, 0.3, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(r*0.5, -r*0.5, r*0.13, r*0.10, -0.2, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(-r*0.2, r*0.6, r*0.10, r*0.08, 0, 0, Math.PI*2); ctx.fill();
+  }
+
   // Уши
-  ctx.fillStyle = '#e09540';
+  ctx.fillStyle = skin.ear;
   ctx.strokeStyle = '#5a3a1a';
   ctx.lineWidth = 2.5;
   ctx.beginPath();
@@ -375,9 +1603,8 @@ function drawShiba() {
   ctx.lineTo(-r * 0.35, -r * 1.35);
   ctx.lineTo(-r * 0.05, -r * 0.75);
   ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-  ctx.fillStyle = '#ffa8a0';
+  ctx.fill(); ctx.stroke();
+  ctx.fillStyle = skin.innerEar;
   ctx.beginPath();
   ctx.moveTo(-r * 0.6, -r * 0.6);
   ctx.lineTo(-r * 0.35, -r * 1.15);
@@ -385,15 +1612,14 @@ function drawShiba() {
   ctx.closePath();
   ctx.fill();
 
-  ctx.fillStyle = '#e09540';
+  ctx.fillStyle = skin.ear;
   ctx.beginPath();
   ctx.moveTo(r * 0.75, -r * 0.55);
   ctx.lineTo(r * 0.35, -r * 1.35);
   ctx.lineTo(r * 0.05, -r * 0.75);
   ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-  ctx.fillStyle = '#ffa8a0';
+  ctx.fill(); ctx.stroke();
+  ctx.fillStyle = skin.innerEar;
   ctx.beginPath();
   ctx.moveTo(r * 0.6, -r * 0.6);
   ctx.lineTo(r * 0.35, -r * 1.15);
@@ -402,46 +1628,29 @@ function drawShiba() {
   ctx.fill();
 
   // Мордочка
-  ctx.fillStyle = '#fffaf0';
+  ctx.fillStyle = skin.belly;
   ctx.beginPath();
   ctx.ellipse(r * 0.15, r * 0.35, r * 0.65, r * 0.5, 0, 0, Math.PI * 2);
   ctx.fill();
 
   // Бровки
-  ctx.fillStyle = '#fffaf0';
-  ctx.beginPath();
-  ctx.ellipse(-r * 0.3, -r * 0.25, r * 0.22, r * 0.14, -0.3, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.ellipse(r * 0.3, -r * 0.28, r * 0.22, r * 0.14, 0.3, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.fillStyle = skin.belly;
+  ctx.beginPath(); ctx.ellipse(-r * 0.3, -r * 0.25, r * 0.22, r * 0.14, -0.3, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(r * 0.3, -r * 0.28, r * 0.22, r * 0.14, 0.3, 0, Math.PI * 2); ctx.fill();
 
   // Глаза
   ctx.fillStyle = '#2a1a0a';
-  ctx.beginPath();
-  ctx.ellipse(-r * 0.3, r * 0.0, r * 0.18, r * 0.22, -0.15, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.ellipse(r * 0.3, r * 0.0, r * 0.18, r * 0.22, 0.15, 0, Math.PI * 2);
-  ctx.fill();
-
+  ctx.beginPath(); ctx.ellipse(-r * 0.3, 0, r * 0.18, r * 0.22, -0.15, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(r * 0.3, 0, r * 0.18, r * 0.22, 0.15, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#fff';
-  ctx.beginPath();
-  ctx.arc(-r * 0.25, -r * 0.08, r * 0.06, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(r * 0.35, -r * 0.08, r * 0.06, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.beginPath(); ctx.arc(-r * 0.25, -r * 0.08, r * 0.06, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(r * 0.35, -r * 0.08, r * 0.06, 0, Math.PI * 2); ctx.fill();
 
   // Нос
   ctx.fillStyle = '#1a0f05';
-  ctx.beginPath();
-  ctx.ellipse(r * 0.15, r * 0.28, r * 0.16, r * 0.12, 0, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.beginPath(); ctx.ellipse(r * 0.15, r * 0.28, r * 0.16, r * 0.12, 0, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#fff';
-  ctx.beginPath();
-  ctx.ellipse(r * 0.11, r * 0.24, r * 0.05, r * 0.03, 0, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.beginPath(); ctx.ellipse(r * 0.11, r * 0.24, r * 0.05, r * 0.03, 0, 0, Math.PI * 2); ctx.fill();
 
   // Ротик
   ctx.strokeStyle = '#1a0f05';
@@ -456,24 +1665,110 @@ function drawShiba() {
   ctx.quadraticCurveTo(r * 0.25, r * 0.55, r * 0.35, r * 0.42);
   ctx.stroke();
 
-  // Усики
-  ctx.fillStyle = '#1a0f05';
-  ctx.beginPath(); ctx.arc(-r * 0.55, r * 0.25, r * 0.04, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(-r * 0.6,  r * 0.38, r * 0.04, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(-r * 0.52, r * 0.48, r * 0.04, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc( r * 0.55, r * 0.25, r * 0.04, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc( r * 0.6,  r * 0.38, r * 0.04, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc( r * 0.52, r * 0.48, r * 0.04, 0, Math.PI*2); ctx.fill();
-
   // Румянец
   ctx.fillStyle = 'rgba(255, 150, 150, 0.45)';
-  ctx.beginPath();
-  ctx.arc(-r * 0.55, r * 0.15, r * 0.14, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(r * 0.55, r * 0.15, r * 0.14, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.beginPath(); ctx.arc(-r * 0.55, r * 0.15, r * 0.14, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(r * 0.55, r * 0.15, r * 0.14, 0, Math.PI * 2); ctx.fill();
 
+  ctx.restore();
+}
+
+function drawShiba() { drawDog(bird.x, bird.y, bird.r, bird.rot, bird.tailWag, getSkin(), false); }
+
+// ===== ПИТОМЕЦ-КОТЁНОК =====
+function drawPet() {
+  ctx.save();
+  ctx.translate(petX, petY);
+  const s = 10;
+  // Тело
+  ctx.fillStyle = '#888';
+  ctx.beginPath();
+  ctx.ellipse(0, 0, s, s * 0.8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // Голова
+  ctx.fillStyle = '#999';
+  ctx.beginPath();
+  ctx.arc(0, -s * 0.8, s * 0.7, 0, Math.PI * 2);
+  ctx.fill();
+  // Ушки
+  ctx.beginPath();
+  ctx.moveTo(-s * 0.5, -s * 1.2);
+  ctx.lineTo(-s * 0.2, -s * 1.7);
+  ctx.lineTo(0, -s * 1.1);
+  ctx.fill();
+  ctx.beginPath();
+    ctx.moveTo(s * 0.5, -s * 1.2);
+  ctx.lineTo(s * 0.2, -s * 1.7);
+  ctx.lineTo(0, -s * 1.1);
+  ctx.fill();
+  // Глазки
+  ctx.fillStyle = '#000';
+  ctx.beginPath();
+  ctx.arc(-s * 0.25, -s * 0.9, s * 0.1, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(s * 0.25, -s * 0.9, s * 0.1, 0, Math.PI * 2);
+  ctx.fill();
+  // Носик
+  ctx.fillStyle = '#ff88aa';
+  ctx.beginPath();
+  ctx.arc(0, -s * 0.65, s * 0.08, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+// ===== БОСС =====
+function drawBoss() {
+  if (!bossMode) return;
+  ctx.save();
+  ctx.translate(bossX, H / 2);
+  // Тело
+  ctx.fillStyle = '#8a2020';
+  ctx.beginPath();
+  ctx.arc(0, 0, 55, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  // Глаза
+  ctx.fillStyle = '#ffd93b';
+  ctx.beginPath();
+  ctx.arc(-18, -10, 10, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(18, -10, 10, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#000';
+  ctx.beginPath();
+  ctx.arc(-18, -10, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(18, -10, 5, 0, Math.PI * 2);
+  ctx.fill();
+  // Злая улыбка
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(-20, 15);
+  ctx.lineTo(-10, 22);
+  ctx.lineTo(0, 15);
+  ctx.lineTo(10, 22);
+  ctx.lineTo(20, 15);
+  ctx.stroke();
+  // Рога
+  ctx.fillStyle = '#000';
+  ctx.beginPath();
+  ctx.moveTo(-40, -35);
+  ctx.lineTo(-50, -60);
+  ctx.lineTo(-30, -45);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(40, -35);
+  ctx.lineTo(50, -60);
+  ctx.lineTo(30, -45);
+  ctx.closePath();
+  ctx.fill();
   ctx.restore();
 }
 
@@ -484,23 +1779,17 @@ function drawGraffiti(x, y, w, h, seed) {
   ctx.beginPath();
   ctx.rect(x, y, w, h);
   ctx.clip();
-
   const grad = ctx.createLinearGradient(x, 0, x + w, 0);
-  grad.addColorStop(0,    '#0d2f5c');
-  grad.addColorStop(0.2,  '#1e5aa8');
+  grad.addColorStop(0, '#0d2f5c');
+  grad.addColorStop(0.2, '#1e5aa8');
   grad.addColorStop(0.45, '#4a95dd');
-  grad.addColorStop(0.6,  '#7ec3f0');
-  grad.addColorStop(0.8,  '#3d8fd6');
-  grad.addColorStop(1,    '#0d2f5c');
+  grad.addColorStop(0.6, '#7ec3f0');
+  grad.addColorStop(0.8, '#3d8fd6');
+  grad.addColorStop(1, '#0d2f5c');
   ctx.fillStyle = grad;
   ctx.fillRect(x, y, w, h);
-
   let s = seed;
-  function rnd() {
-    s = (s * 9301 + 49297) % 233280;
-    return s / 233280;
-  }
-
+  function rnd() { s = (s * 9301 + 49297) % 233280; return s / 233280; }
   const step = 45;
   for (let cy = y + 20; cy < y + h + 40; cy += step) {
     const count = 2 + Math.floor(rnd() * 3);
@@ -510,84 +1799,60 @@ function drawGraffiti(x, y, w, h, seed) {
       const px = x + 5 + rnd() * (w - pw - 10);
       const py = cy + (rnd() - 0.5) * 35;
       const rot = (rnd() - 0.5) * 1.0;
-
       ctx.save();
       ctx.translate(px + pw / 2, py + ph / 2);
       ctx.rotate(rot);
-
       ctx.fillStyle = '#000';
       ctx.fillRect(-pw/2 - 4, -ph/2 - 4, pw + 8, ph + 8);
-
       const tones = ['#1a4d8f', '#2a6fc4', '#4a95dd', '#6fb8ee', '#8ed0f5'];
       ctx.fillStyle = tones[Math.floor(rnd() * tones.length)];
       ctx.fillRect(-pw/2, -ph/2, pw, ph);
-
       ctx.fillStyle = 'rgba(200, 235, 255, 0.9)';
       ctx.fillRect(-pw/2 + 2, -ph/2 + 2, pw - 4, 4);
-
       if (rnd() > 0.4) {
         ctx.fillStyle = '#000';
         const dx = -pw/2 + 6 + rnd() * (pw - 16);
         const dy = -ph/2 + 8 + rnd() * (ph - 16);
         ctx.fillRect(dx, dy, 5 + rnd() * 10, 4 + rnd() * 8);
       }
-
-      if (rnd() > 0.6) {
-        ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-        ctx.lineWidth = 1.5;
-        ctx.strokeRect(-pw/2, -ph/2, pw, ph);
-      }
-
       ctx.restore();
     }
   }
-
   ctx.strokeStyle = '#000';
   ctx.lineWidth = 6;
   ctx.strokeRect(x + 3, y + 3, w - 6, h - 6);
-
   ctx.fillStyle = 'rgba(180, 225, 255, 0.4)';
   ctx.fillRect(x + 10, y, 6, h);
-
   ctx.fillStyle = 'rgba(5, 15, 40, 0.5)';
   ctx.fillRect(x + w - 14, y, 14, h);
-
   ctx.restore();
 }
 
 function drawCap(x, y, w, h, seed) {
   ctx.fillStyle = '#000';
   ctx.fillRect(x - 7, y - 5, w + 14, h + 10);
-
   const grad = ctx.createLinearGradient(x, 0, x + w, 0);
-  grad.addColorStop(0,   '#0d2f5c');
+  grad.addColorStop(0, '#0d2f5c');
   grad.addColorStop(0.3, '#2a6fc4');
-  grad.addColorStop(0.55,'#7ec3f0');
+  grad.addColorStop(0.55, '#7ec3f0');
   grad.addColorStop(0.8, '#3d8fd6');
-  grad.addColorStop(1,   '#0d2f5c');
+  grad.addColorStop(1, '#0d2f5c');
   ctx.fillStyle = grad;
   ctx.fillRect(x, y, w, h);
-
   let s = seed + 1234;
-  function rnd() {
-    s = (s * 9301 + 49297) % 233280;
-    return s / 233280;
-  }
+  function rnd() { s = (s * 9301 + 49297) % 233280; return s / 233280; }
   for (let i = 0; i < 4; i++) {
     const pw = 14 + rnd() * 22;
     const ph = 8 + rnd() * 12;
     const px = x + 4 + rnd() * (w - pw - 8);
     const py = y + 3 + rnd() * (h - ph - 6);
-
     ctx.fillStyle = '#000';
     ctx.fillRect(px - 2, py - 2, pw + 4, ph + 4);
-    ctx.fillStyle = ['#2a6fc4','#6fb8ee','#4a95dd','#1a4d8f'][Math.floor(rnd()*4)];
+    ctx.fillStyle = ['#2a6fc4', '#6fb8ee', '#4a95dd', '#1a4d8f'][Math.floor(rnd() * 4)];
     ctx.fillRect(px, py, pw, ph);
-
     ctx.fillStyle = 'rgba(200,235,255,0.9)';
     ctx.fillRect(px + 1, py + 1, pw - 2, 2);
   }
-
   ctx.fillStyle = 'rgba(220, 245, 255, 0.6)';
   ctx.fillRect(x + 4, y + 3, w - 8, 3);
 }
@@ -595,20 +1860,89 @@ function drawCap(x, y, w, h, seed) {
 function drawPipes() {
   for (const p of pipes) {
     const bottomY = p.top + GAP;
-
     drawGraffiti(p.x, 0, PIPE_W, p.top - 26, p.seed);
     drawCap(p.x - 7, p.top - 26, PIPE_W + 14, 26, p.seed);
-
     drawCap(p.x - 7, bottomY, PIPE_W + 14, 26, p.seed + 500);
     drawGraffiti(p.x, bottomY + 26, PIPE_W, H - bottomY - 26, p.seed + 500);
   }
 }
 
-// ===== КОСТОЧКИ МЕЖДУ ТРУБАМИ =====
 function drawBones() {
   for (const p of pipes) {
-    if (p.bone.eaten) continue;  // съедена — не рисуем
-    drawBone(p.bone.x, p.bone.y, 40, Math.sin(frame / 15 + p.seed) * 0.2);
+    if (p.bone.eaten) continue;
+    drawBone(p.bone.x, p.bone.y, 40, Math.sin(frame / 15 + p.seed) * 0.2, p.bone.type);
+  }
+}
+
+function drawFallingCoins() {
+  for (const c of fallingCoins) {
+    ctx.save();
+    ctx.translate(c.x, c.y);
+    ctx.fillStyle = '#ffd93b';
+    ctx.strokeStyle = '#a07800';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 14px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('💰', 0, 0);
+    ctx.restore();
+  }
+}
+
+function drawBackground() {
+  // Основной фон из скина
+  const bg = getBG();
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, bg.top);
+  grad.addColorStop(1, bg.bottom);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // День/ночь поверх (если обычный режим)
+  if (mode !== 'night' && timeOfDay !== 'day' && save.bgCurrent === 'day') {
+    if (timeOfDay === 'dusk') {
+      ctx.fillStyle = 'rgba(255, 140, 60, 0.25)';
+      ctx.fillRect(0, 0, W, H);
+    } else if (timeOfDay === 'sunset') {
+      ctx.fillStyle = 'rgba(255, 80, 40, 0.35)';
+      ctx.fillRect(0, 0, W, H);
+    } else if (timeOfDay === 'night') {
+      ctx.fillStyle = 'rgba(10, 10, 40, 0.55)';
+      ctx.fillRect(0, 0, W, H);
+      // Звёзды
+      ctx.fillStyle = '#fff';
+      for (let i = 0; i < 30; i++) {
+        const sx = (i * 137.5) % W;
+        const sy = (i * 89.7) % (H / 2);
+        const tw = Math.sin(frame / 20 + i) * 0.5 + 0.5;
+        ctx.globalAlpha = tw;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+  }
+  // Режим "ночь"
+  if (mode === 'night') {
+    ctx.fillStyle = 'rgba(10, 10, 40, 0.6)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#fff';
+    for (let i = 0; i < 40; i++) {
+      const sx = (i * 137.5) % W;
+      const sy = (i * 89.7) % H;
+      const tw = Math.sin(frame / 20 + i) * 0.5 + 0.5;
+      ctx.globalAlpha = tw;
+      ctx.beginPath();
+      ctx.arc(sx, sy, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
   }
 }
 
@@ -622,16 +1956,39 @@ function drawGround() {
 
 function draw() {
   ctx.clearRect(0, 0, W, H);
-  const grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, '#4ec0ca');
-  grad.addColorStop(1, '#8ee0e8');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, W, H);
-
+  drawBackground();
   drawPipes();
   drawBones();
+  drawBoss();
+  drawFallingCoins();
   drawGround();
   drawShiba();
+  drawPet();
+  if (player2Mode) {
+    drawDog(bird2.x, bird2.y, bird2.r, bird2.rot, bird2.tailWag, getSkin(), !bird2.alive);
+  }
+  // Индикатор щита
+  if (shield > 0) {
+    ctx.save();
+    ctx.strokeStyle = '#50c8ff';
+    ctx.lineWidth = 4;
+    ctx.globalAlpha = 0.6 + Math.sin(frame / 5) * 0.3;
+    ctx.beginPath();
+    ctx.arc(bird.x, bird.y, bird.r + 8, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
+  // Индикатор магнита
+  if (magnet > 0) {
+    ctx.save();
+    ctx.strokeStyle = '#ff5050';
+    ctx.lineWidth = 3;
+    ctx.globalAlpha = 0.4 + Math.sin(frame / 5) * 0.2;
+    ctx.beginPath();
+    ctx.arc(bird.x, bird.y, 200, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
 }
 
 function loop() {
@@ -640,7 +1997,193 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
-reset();
+
+// ===== КНОПКА "ЗАДАНИЯ" В МЕНЮ =====
+document.getElementById('btn-daily').addEventListener('click', showDaily);
+document.getElementById('btn-daily-back').addEventListener('click', showMenu);
+
+function showDaily() {
+  menu.classList.add('hidden');
+  shop.classList.add('hidden');
+  ach.classList.add('hidden');
+  topEl.classList.add('hidden');
+  dailyEl.classList.remove('hidden');
+  buildDaily();
+}
+
+// ===== СКРЫТЬ daily ПРИ ВЫХОДЕ В МЕНЮ =====
+const _showMenuOrig = showMenu;
+showMenu = function() {
+  if (dailyEl) dailyEl.classList.add('hidden');
+  _showMenuOrig();
+};
+
+// ===== ЗАПУСК ЗАДАНИЙ ПРИ СТАРТЕ ИГРЫ =====
+const _startGameOrig = startGame;
+startGame = function(m) {
+  dailyQuests.stats.games = (dailyQuests.stats.games || 0) + 1;
+  updateQuests();
+  writeDaily();
+  _startGameOrig(m);
+};
+
+// ===== ХУК НА КОСТОЧКУ (учёт в заданиях) =====
+const _spawnPipeOrig = spawnPipe;
+// Запоминаем сколько уже съедено, чтобы в gameOver посчитать
+let _runBonesCount = 0;
+let _runGoldCount = 0;
+let _runCoinsCount = 0;
+let _runMagnetCount = 0;
+let _runShieldCount = 0;
+let _runBestCombo = 0;
+
+// Обёртка съедания косточки — встраиваем в update через патч
+// Проще: переопределим getter-хуки через функцию updateQuestsAfterBone
+function trackBone(type) {
+  if (type === 'gold') {
+    dailyQuests.stats.gold = (dailyQuests.stats.gold || 0) + 1;
+    _runGoldCount++;
+    _runBonesCount++;
+    dailyQuests.stats.bones = (dailyQuests.stats.bones || 0) + 1;
+  } else if (type === 'magnet') {
+    dailyQuests.stats.magnets = (dailyQuests.stats.magnets || 0) + 1;
+    _runMagnetCount++;
+  } else if (type === 'shield') {
+    dailyQuests.stats.shields = (dailyQuests.stats.shields || 0) + 1;
+    _runShieldCount++;
+  } else {
+    dailyQuests.stats.bones = (dailyQuests.stats.bones || 0) + 1;
+    _runBonesCount++;
+  }
+  updateQuests();
+  writeDaily();
+}
+
+function trackCoin() {
+  dailyQuests.stats.coins = (dailyQuests.stats.coins || 0) + 1;
+  _runCoinsCount++;
+  updateQuests();
+  writeDaily();
+}
+
+function trackBoss() {
+  dailyQuests.stats.boss = (dailyQuests.stats.boss || 0) + 1;
+  updateQuests();
+  writeDaily();
+}
+
+// ===== ПЕРЕХВАТ СОБЫТИЙ В update() =====
+// Патчим update — оборачиваем, чтобы ловить изменения
+const _updateOrig = update;
+update = function() {
+  const prevScore = score;
+  const prevBones = _runBonesCount;
+  const prevGold = _runGoldCount;
+  const prevCoins = _runCoinsCount;
+  const prevMagnets = _runMagnetCount;
+  const prevShields = _runShieldCount;
+  const prevBoss = bossMode;
+
+  _updateOrig();
+
+  // Смотрим что изменилось
+  // Косточки и монеты отслеживаем через дельту в stats — проще:
+  // Нам нужно ловить события в момент. Но update не возвращает детали.
+  // Поэтому используем счётчики через обёртки (см. ниже).
+};
+
+// ===== ПРОСТОЙ СПОСОБ — правки прямо в ключевых местах через observer =====
+// Так как update использует drawBone и т.д., лучший путь — добавить
+// прямо в gameOver запись статистики за забег:
+
+const _gameOverOrig = gameOver;
+gameOver = function() {
+  // Обновляем задания по итогам забега
+  registerRunEnd(score, Math.max(combo, _runBestCombo));
+  // Считаем звёзды за забег
+  _runBonesCount = 0;
+  _runGoldCount = 0;
+  _runCoinsCount = 0;
+  _runMagnetCount = 0;
+  _runShieldCount = 0;
+  _runBestCombo = 0;
+  _gameOverOrig();
+};
+
+// ===== ПРЯМАЯ ЗАПИСЬ В МОМЕНТ СОБЫТИЙ =====
+// Патчим через добавление счётчиков в обновление gameOver и в ключевые функции.
+
+// Перехватываем вызовы звуков — они как раз в момент события!
+const _soundScoreHook = soundScore;
+soundScore = function() {
+  if (soundEnabled) _soundScoreHook();
+  // Не знаем тип косточки, но знаем что это +1 к bones или +5 к gold
+  // Проще — считать по дельте score
+};
+
+// Точный способ: используем MutationObserver-free подход
+// Переопределяем поведение прямо в момент — через счётчики-обёртки над updateBone/drawBones и т.д.
+
+// Практичнее — правки в коде пользователя. Но чтобы не переписывать:
+// Используем ПАТЧ через переопределение функции drawBones и ловим событие eaten.
+
+const _drawBonesOrig = drawBones;
+drawBones = function() {
+  // До отрисовки проверяем: сколько косточек съедено в этом кадре?
+  for (const p of pipes) {
+    if (p.bone && p.bone.eaten && !p.bone._counted) {
+      p.bone._counted = true;
+      trackBone(p.bone.type);
+    }
+  }
+  _drawBonesOrig();
+};
+
+const _drawFallingCoinsOrig = drawFallingCoins;
+// Патч монет — они удаляются через splice, поэтому легче патчить сам update
+// Но проще — встроить счётчик в spawnPipe: не поможет.
+
+// Патч монет через drawFallingCoins — до удаления из массива проверим got
+// Но счётчик сработает многократно, поэтому используем флаг _counted
+const _origDrawFallingCoins = drawFallingCoins;
+drawFallingCoins = function() {
+  for (const c of fallingCoins) {
+    if (c.got && !c._counted) {
+      c._counted = true;
+      trackCoin();
+    }
+  }
+  _origDrawFallingCoins();
+};
+
+// ===== ХУК НА БОССА =====
+// Босс "пройден" когда bossMode = false после true
+let _lastBossMode = false;
+const _drawBossHook = drawBoss;
+drawBoss = function() {
+  if (_lastBossMode === true && bossMode === false) {
+    // Только что прошёл
+    trackBoss();
+  }
+  _lastBossMode = bossMode;
+  _drawBossHook();
+};
+
+// ===== ХУК КОМБО =====
+// Отслеживаем пик комбо
+const _origUpdate = update;
+// (уже обёрнут выше) — поэтому просто перепроверим combo в draw
+const _origDrawHook = draw;
+draw = function() {
+  if (combo > _runBestCombo) _runBestCombo = combo;
+  _origDrawHook();
+};
+
+// ===== ФИНАЛЬНЫЙ СТАРТ =====
+loadSave();
+loadDaily();
+updateSoundIcon();
+showMenu();
 loop();
 </script>
 </body>
