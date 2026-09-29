@@ -1431,15 +1431,21 @@ function update() {
       }
     }
 
-    // ====== Босс столкновение ======
-    if (bossMode) {
-      const bx1 = bird.x - bird.r, bx2 = bird.x + bird.r;
-      const by1 = bird.y - bird.r, by2 = bird.y + bird.r;
-      if (bx2 > bossX && bx1 < bossX + 100) {
-        if (shield > 0) { shield = 0; soundCoin(); }
-        else gameOver();
-      }
-    }
+// ====== Босс столкновение (учитываем круглого босса) ======
+if (bossMode) {
+  const bossRadius = 45;
+  const bossCenterX = bossX;
+  const bossCenterY = H / 2;
+
+  const dxB = bird.x - bossCenterX;
+  const dyB = bird.y - bossCenterY;
+  const distB = Math.sqrt(dxB*dxB + dyB*dyB);
+
+  if (distB < bossRadius) {
+    if (shield > 0) { shield = 0; soundCoin(); }
+    else gameOver();
+  }
+}
 
     // ====== Падающие монеты ======
     for (let i = fallingCoins.length - 1; i >= 0; i--) {
@@ -2178,7 +2184,6 @@ draw = function() {
   if (combo > _runBestCombo) _runBestCombo = combo;
   _origDrawHook();
 };
-
 // ===== ФИНАЛЬНЫЙ СТАРТ =====
 loadSave();
 loadDaily();
