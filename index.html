@@ -14,44 +14,41 @@
   #progress-fill { height:100%; background:linear-gradient(90deg,#ffd93b,#ff8c00); border-radius:3px; width:0%; transition:width 0.2s; }
   #combo-text { position:fixed; top:70px; left:50%; transform:translateX(-50%); color:#ffd93b; font-size:22px; font-weight:900; text-shadow:3px 3px 0 #000; pointer-events:none; z-index:10; display:none; }
   #ach-toast {
-  position:fixed;
-  top:-120px;
-  left:50%;
-  transform:translateX(-50%);
-  background:linear-gradient(180deg, #ffd93b 0%, #d69a00 100%);
-  border:4px solid #fff;
-  border-radius:18px;
-  padding:12px 20px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.4);
-  z-index:9999;
-  pointer-events:none;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  min-width:260px;
-  max-width:90%;
-  transition:top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  opacity:0;
-}
-#ach-toast.show {
-  top:20px;
-  opacity:1;
-}
-#ach-toast .t-icon { font-size:36px; }
-#ach-toast .t-info { flex:1; }
-#ach-toast .t-title { font-size:13px; font-weight:900; color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.4); letter-spacing:1px; }
-#ach-toast .t-name { font-size:17px; font-weight:900; color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.4); margin-top:2px; }
-#ach-toast .t-desc { font-size:12px; color:#fff; opacity:0.9; margin-top:2px; }
+    position:fixed; top:-120px; left:50%; transform:translateX(-50%);
+    background:linear-gradient(180deg, #ffd93b 0%, #d69a00 100%);
+    border:4px solid #fff; border-radius:18px; padding:12px 20px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.4); z-index:9999; pointer-events:none;
+    display:flex; align-items:center; gap:12px; min-width:260px; max-width:90%;
+    transition:top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); opacity:0;
+  }
+  #ach-toast.show { top:20px; opacity:1; }
+  #ach-toast .t-icon { font-size:36px; }
+  #ach-toast .t-info { flex:1; }
+  #ach-toast .t-title { font-size:13px; font-weight:900; color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.4); letter-spacing:1px; }
+  #ach-toast .t-name { font-size:17px; font-weight:900; color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.4); margin-top:2px; }
+  #ach-toast .t-desc { font-size:12px; color:#fff; opacity:0.9; margin-top:2px; }
+  #quest-toast {
+    position:fixed; top:-120px; left:50%; transform:translateX(-50%);
+    background:linear-gradient(180deg, #6bd66b 0%, #38a338 100%);
+    border:4px solid #fff; border-radius:18px; padding:12px 20px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.4); z-index:9999; pointer-events:none;
+    display:flex; align-items:center; gap:12px; min-width:260px; max-width:90%;
+    transition:top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); opacity:0;
+  }
+  #quest-toast.show { top:20px; opacity:1; }
+  #quest-toast .t-icon { font-size:36px; }
+  #quest-toast .t-info { flex:1; }
+  #quest-toast .t-title { font-size:13px; font-weight:900; color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.4); letter-spacing:1px; }
+  #quest-toast .t-name { font-size:17px; font-weight:900; color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.4); margin-top:2px; }
+  #quest-toast .t-desc { font-size:12px; color:#fff; opacity:0.9; margin-top:2px; }
   .screen { position:fixed; inset:0; background:linear-gradient(180deg, #4ec0ca 0%, #8ee0e8 100%); z-index:100; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:20px; overflow-y:auto; }
   .hidden { display:none !important; }
-
   .menu-title { color:#fff; font-size:40px; font-weight:900; text-shadow:4px 4px 0 #000; margin:20px 0 6px; letter-spacing:2px; text-align:center; }
   .menu-sub { color:#fff; font-size:15px; font-weight:bold; text-shadow:2px 2px 0 #000; margin-bottom:16px; text-align:center; opacity:0.9; }
   .stat-badge { display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; justify-content:center; }
   .stat-box { background:rgba(0,0,0,0.35); border:3px solid #fff; border-radius:16px; padding:8px 12px; color:#fff; font-weight:bold; text-align:center; min-width:80px; box-shadow:0 4px 0 rgba(0,0,0,0.3); }
   .stat-box .lbl { font-size:10px; opacity:0.85; letter-spacing:1px; }
   .stat-box .val { font-size:18px; margin-top:2px; }
-
   .btn { display:block; width:260px; padding:13px 18px; margin:5px 0; font-size:19px; font-weight:900; color:#fff; background:linear-gradient(180deg, #ffb347 0%, #ff8c00 100%); border:4px solid #fff; border-radius:16px; box-shadow:0 5px 0 #b35900, 0 7px 10px rgba(0,0,0,0.3); cursor:pointer; text-shadow:2px 2px 0 rgba(0,0,0,0.3); -webkit-tap-highlight-color:transparent; }
   .btn:active { transform:translateY(4px); box-shadow:0 1px 0 #b35900, 0 2px 4px rgba(0,0,0,0.3); }
   .btn.blue  { background:linear-gradient(180deg, #4ca3ff 0%, #1e6fd6 100%); box-shadow:0 5px 0 #124a99; }
@@ -59,15 +56,12 @@
   .btn.gray  { background:linear-gradient(180deg, #bbb 0%, #888 100%); box-shadow:0 5px 0 #555; }
   .btn.purple{ background:linear-gradient(180deg, #b56bff 0%, #7a2fd6 100%); box-shadow:0 5px 0 #4a1a99; }
   .btn.small { width:auto; padding:8px 14px; font-size:13px; }
-
   .header-row { width:100%; max-width:420px; display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
   .header-row h2 { color:#fff; font-size:24px; font-weight:900; text-shadow:3px 3px 0 #000; }
   .coins-badge { background:linear-gradient(180deg, #ffd93b 0%, #d69a00 100%); border:3px solid #fff; border-radius:14px; padding:5px 12px; color:#fff; font-weight:900; font-size:16px; text-shadow:2px 2px 0 rgba(0,0,0,0.4); box-shadow:0 4px 0 #8a6200; white-space:nowrap; }
-
   .tab-row { display:flex; gap:6px; margin-bottom:14px; }
   .tab-btn { padding:8px 14px; font-size:14px; font-weight:900; color:#fff; background:rgba(0,0,0,0.3); border:3px solid #fff; border-radius:12px; cursor:pointer; text-shadow:2px 2px 0 rgba(0,0,0,0.3); -webkit-tap-highlight-color:transparent; }
   .tab-btn.active { background:linear-gradient(180deg, #ffb347 0%, #ff8c00 100%); }
-
   .grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; width:100%; max-width:420px; margin-bottom:16px; }
   .skin-card { background:rgba(255,255,255,0.95); border:4px solid #fff; border-radius:16px; padding:8px 4px; text-align:center; cursor:pointer; box-shadow:0 5px 0 rgba(0,0,0,0.3); -webkit-tap-highlight-color:transparent; }
   .skin-card:active { transform:translateY(3px); }
@@ -78,7 +72,6 @@
   .skin-card .price { font-size:12px; font-weight:bold; color:#b88400; }
   .skin-card .price.owned { color:#2a8a2a; }
   .skin-card .price.equipped { color:#1e6fd6; }
-
   .achievement-item { width:100%; max-width:420px; background:rgba(255,255,255,0.95); border:3px solid #fff; border-radius:14px; padding:10px 14px; margin-bottom:8px; display:flex; align-items:center; gap:10px; box-shadow:0 4px 0 rgba(0,0,0,0.3); }
   .achievement-item.locked { opacity:0.5; }
   .achievement-item .icon { font-size:28px; }
@@ -86,66 +79,27 @@
   .achievement-item .info .t { font-size:15px; font-weight:900; color:#333; }
   .achievement-item .info .d { font-size:12px; color:#666; margin-top:2px; }
   .achievement-item .check { font-size:24px; }
-
   .leaderboard-item { width:100%; max-width:420px; background:rgba(255,255,255,0.95); border:3px solid #fff; border-radius:14px; padding:10px 14px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 4px 0 rgba(0,0,0,0.3); }
   .leaderboard-item .rank { font-size:20px; font-weight:900; color:#b88400; min-width:40px; }
   .leaderboard-item .score { font-size:18px; font-weight:900; color:#333; }
   .leaderboard-item .date { font-size:11px; color:#888; }
   .leaderboard-item.gold { background:linear-gradient(180deg,#ffd93b,#d69a00); }
   .leaderboard-item.gold .rank, .leaderboard-item.gold .score, .leaderboard-item.gold .date { color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.4); }
-  /* Переключатель звука */
-.sound-toggle {
-  position:fixed; top:16px; right:16px;
-  width:50px; height:50px;
-  background:rgba(0,0,0,0.4);
-  border:3px solid #fff; border-radius:14px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:22px; cursor:pointer; z-index:200;
-  box-shadow:0 4px 0 rgba(0,0,0,0.3);
-  -webkit-tap-highlight-color:transparent;
-  color:#fff; user-select:none;
-}
-.sound-toggle:active { transform:translateY(2px); }
-.sound-toggle.off { opacity:0.55; }
-
-/* Задания */
-.quest-item {
-  width:100%; max-width:420px;
-  background:rgba(255,255,255,0.95);
-  border:3px solid #fff; border-radius:14px;
-  padding:12px 14px; margin-bottom:8px;
-  box-shadow:0 4px 0 rgba(0,0,0,0.3);
-}
-.quest-item.done { background:linear-gradient(180deg,#6bd66b,#38a338); }
-.quest-item .q-title { font-size:15px; font-weight:900; color:#333; margin-bottom:6px; }
-.quest-item.done .q-title { color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.3); }
-.quest-item .q-progress {
-  height:12px; background:rgba(0,0,0,0.15);
-  border-radius:6px; overflow:hidden; margin-bottom:4px;
-}
-.quest-item .q-fill {
-  height:100%; background:linear-gradient(90deg,#ffd93b,#ff8c00);
-  border-radius:6px; transition:width 0.4s;
-}
-.quest-item.done .q-fill { background:#fff; }
-.quest-item .q-info {
-  display:flex; justify-content:space-between;
-  font-size:12px; color:#666; font-weight:bold;
-}
-.quest-item.done .q-info { color:#fff; }
-.quest-item .q-reward { color:#b88400; }
-.quest-item.done .q-reward { color:#fff; }
-
-.daily-timer {
-  width:100%; max-width:420px;
-  background:rgba(0,0,0,0.35);
-  border:3px solid #fff; border-radius:14px;
-  padding:10px 14px; color:#fff;
-  font-weight:900; font-size:14px; text-align:center;
-  box-shadow:0 4px 0 rgba(0,0,0,0.3);
-  margin-bottom:14px;
-  text-shadow:2px 2px 0 rgba(0,0,0,0.4);
-}
+  .sound-toggle { position:fixed; top:16px; right:16px; width:50px; height:50px; background:rgba(0,0,0,0.4); border:3px solid #fff; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; cursor:pointer; z-index:200; box-shadow:0 4px 0 rgba(0,0,0,0.3); -webkit-tap-highlight-color:transparent; color:#fff; user-select:none; }
+  .sound-toggle:active { transform:translateY(2px); }
+  .sound-toggle.off { opacity:0.55; }
+  .quest-item { width:100%; max-width:420px; background:rgba(255,255,255,0.95); border:3px solid #fff; border-radius:14px; padding:12px 14px; margin-bottom:8px; box-shadow:0 4px 0 rgba(0,0,0,0.3); }
+  .quest-item.done { background:linear-gradient(180deg,#6bd66b,#38a338); }
+  .quest-item .q-title { font-size:15px; font-weight:900; color:#333; margin-bottom:6px; }
+  .quest-item.done .q-title { color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.3); }
+  .quest-item .q-progress { height:12px; background:rgba(0,0,0,0.15); border-radius:6px; overflow:hidden; margin-bottom:4px; }
+  .quest-item .q-fill { height:100%; background:linear-gradient(90deg,#ffd93b,#ff8c00); border-radius:6px; transition:width 0.4s; }
+  .quest-item.done .q-fill { background:#fff; }
+  .quest-item .q-info { display:flex; justify-content:space-between; font-size:12px; color:#666; font-weight:bold; }
+  .quest-item.done .q-info { color:#fff; }
+  .quest-item .q-reward { color:#b88400; }
+  .quest-item.done .q-reward { color:#fff; }
+  .daily-timer { width:100%; max-width:420px; background:rgba(0,0,0,0.35); border:3px solid #fff; border-radius:14px; padding:10px 14px; color:#fff; font-weight:900; font-size:14px; text-align:center; box-shadow:0 4px 0 rgba(0,0,0,0.3); margin-bottom:14px; text-shadow:2px 2px 0 rgba(0,0,0,0.4); }
 </style>
 </head>
 <body>
@@ -153,7 +107,7 @@
 <div id="sound-toggle" class="sound-toggle">🔊</div>
 <div id="combo-text"></div>
 <div id="progress-bar"><div id="progress-fill"></div></div>
- <div id="ach-toast">
+<div id="ach-toast">
   <div class="t-icon">🏅</div>
   <div class="t-info">
     <div class="t-title">АЧИВКА РАЗБЛОКИРОВАНА!</div>
@@ -222,6 +176,7 @@
   <div id="top-list" style="width:100%; max-width:420px;"></div>
   <button class="btn gray" id="btn-top-back">← НАЗАД</button>
 </div>
+
 <!-- ЕЖЕДНЕВНЫЕ ЗАДАНИЯ -->
 <div id="daily" class="screen hidden">
   <div class="header-row">
@@ -232,6 +187,7 @@
   <div id="quest-list" style="width:100%; max-width:420px;"></div>
   <button class="btn gray" id="btn-daily-back">← НАЗАД</button>
 </div>
+
 <script>
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -248,7 +204,6 @@ const shopCoins = document.getElementById('shop-coins');
 const progressBar = document.getElementById('progress-bar');
 const progressFill = document.getElementById('progress-fill');
 const comboText = document.getElementById('combo-text');
-// ===== НОВЫЕ ССЫЛКИ =====
 const soundToggleEl = document.getElementById('sound-toggle');
 const dailyEl = document.getElementById('daily');
 const questList = document.getElementById('quest-list');
@@ -256,7 +211,6 @@ const dailyTimerEl = document.getElementById('daily-timer');
 const dailyCoinsEl = document.getElementById('daily-coins');
 
 // ===== 20 ШАБЛОНОВ ЗАДАНИЙ =====
-// type: 'total' — суммируется за день | 'single' — за один забег
 const QUEST_TEMPLATES = [
   { type:'total',  target:30,  reward:25, icon:'🦴', text:'Съешь {n} косточек за день',        track:'bones' },
   { type:'total',  target:75,  reward:40, icon:'🦴', text:'Съешь {n} косточек за день',        track:'bones' },
@@ -280,10 +234,6 @@ const QUEST_TEMPLATES = [
   { type:'total',  target:600, reward:50, icon:'📏', text:'Пролети суммарно {n} очков',        track:'totalScore' },
 ];
 
-// ===== ДАННЫЕ ЗАДАНИЙ =====
-// quests: массив из 3 объектов { templateIndex, progress, done }
-// dayKey: 'YYYY-MM-DD' текущего дня
-// stats: статистика за день (суммируется)
 let dailyQuests = {
   dayKey: '',
   quests: [],
@@ -313,7 +263,6 @@ function loadDaily() {
 }
 
 function generateDaily() {
-  // Выбираем 3 случайных шаблона без повторов
   const used = new Set();
   const picked = [];
   while (picked.length < 3) {
@@ -337,7 +286,6 @@ function writeDaily() {
   try { localStorage.setItem('flappy_daily', JSON.stringify(dailyQuests)); } catch(e) {}
 }
 
-// ===== ПРОГРЕСС ЗАДАНИЙ =====
 function questProgress(q) {
   const t = QUEST_TEMPLATES[q.templateIndex];
   if (t.type === 'single') {
@@ -361,7 +309,6 @@ function updateQuests() {
       save.maxCoins = Math.max(save.maxCoins, save.coins);
       changed = true;
       soundBuy();
-      // Показываем красивый тост вместо alert
       showQuestToast(t);
       updateMenuUI();
       if (dailyEl && !dailyEl.classList.contains('hidden')) buildDaily();
@@ -375,7 +322,6 @@ function updateQuests() {
   }
 }
 
-// ===== ТОСТ ЗАДАНИЯ (как ачивка, но зелёный) =====
 let questToastQueue = [];
 let questToastShowing = false;
 let questToastTimer = null;
@@ -394,12 +340,10 @@ function processQuestToastQueue() {
   const t = questToastQueue.shift();
   const el = document.getElementById('quest-toast');
   if (!el) { questToastShowing = false; return; }
-
   el.querySelector('.t-icon').textContent = t.icon;
   el.querySelector('.t-name').textContent = 'Задание выполнено!';
   el.querySelector('.t-desc').textContent = t.text.replace('{n}', t.target) + '  •  +' + t.reward + ' 💰';
   el.classList.add('show');
-
   if (questToastTimer) clearTimeout(questToastTimer);
   questToastTimer = setTimeout(() => {
     el.classList.remove('show');
@@ -409,6 +353,7 @@ function processQuestToastQueue() {
     }, 550);
   }, 3000);
 }
+
 function applyDailyProgress(key, amount) {
   if (!dailyQuests.stats) return;
   if (typeof amount === 'undefined') amount = 1;
@@ -427,18 +372,15 @@ function registerRunEnd(runScore, runCombo) {
   updateQuests();
 }
 
-// ===== ОТРИСОВКА ЭКРАНА ЗАДАНИЙ =====
 function buildDaily() {
   if (!questList) return;
   questList.innerHTML = '';
   dailyCoinsEl.textContent = save.coins;
   updateDailyTimer();
-
   dailyQuests.quests.forEach(q => {
     const t = QUEST_TEMPLATES[q.templateIndex];
     const val = Math.min(questProgress(q), t.target);
     const pct = Math.round((val / t.target) * 100);
-
     const div = document.createElement('div');
     div.className = 'quest-item' + (q.done ? ' done' : '');
     div.innerHTML =
@@ -487,10 +429,8 @@ function toggleSound() {
   if (!soundEnabled) stopMusic();
   updateSoundIcon();
 }
-
 soundToggleEl && soundToggleEl.addEventListener('click', toggleSound);
 
-// Обёртки звуков — учитывают soundEnabled
 const _soundBark = soundBark;
 const _soundScore = soundScore;
 const _soundCoin = soundCoin;
@@ -508,6 +448,7 @@ soundGameOver = function(){ if (soundEnabled) _soundGameOver(); };
 soundBuy = function(){ if (soundEnabled) _soundBuy(); };
 soundAchievement = function(){ if (soundEnabled) _soundAchievement(); };
 startMusic = function(){ if (soundEnabled) _startMusic(); };
+
 let W, H;
 function resize() {
   W = canvas.width = window.innerWidth;
@@ -515,7 +456,6 @@ function resize() {
 }
 resize();
 window.addEventListener('resize', () => { resize(); reset(); });
-
 // ===== СКИНЫ =====
 const SKINS = [
   { id:'orange', name:'Рыжий',      price:0,   body:'#e09540', body2:'#f5b860', body3:'#ffd28a', belly:'#fffaf0', ear:'#e09540', innerEar:'#ffa8a0' },
@@ -527,7 +467,6 @@ const SKINS = [
   { id:'chihuahua', name:'Чихуахуа', price:120, body:'#d4a574', body2:'#e8c094', body3:'#f5dcb8', belly:'#fffaf0', ear:'#c99460', innerEar:'#ffb0b0', chihuahua:true },
 ];
 
-// ===== ФОНЫ =====
 const BACKGROUNDS = [
   { id:'day',    name:'День',    price:0,   top:'#4ec0ca', bottom:'#8ee0e8' },
   { id:'sunset', name:'Закат',   price:100, top:'#ff8c42', bottom:'#ffd93b' },
@@ -537,7 +476,6 @@ const BACKGROUNDS = [
   { id:'beach',  name:'Пляж',    price:180, top:'#5ec4ff', bottom:'#ffe4a0' },
 ];
 
-// ===== АЧИВКИ =====
 const ACHIEVEMENTS = [
   { id:'first',     name:'Первая косточка',  desc:'Съешь 1 косточку',         icon:'🦴', check:s => s.totalBones >= 1 },
   { id:'ten',       name:'Десятка',          desc:'Набери 10 очков',          icon:'🔟', check:s => s.record >= 10 },
@@ -551,7 +489,6 @@ const ACHIEVEMENTS = [
   { id:'daily',     name:'Каждый день',      desc:'Получи 3 ежедневные награды', icon:'🎁', check:s => s.dailyCount >= 3 },
 ];
 
-// ===== СОХРАНЕНИЕ =====
 let save = {
   record: 0, coins: 0, maxCoins: 0,
   owned: ['orange'], current: 'orange',
@@ -601,6 +538,7 @@ let combo = 0, comboTimer = 0;
 let shield = 0, magnet = 0;
 let bossMode = false, bossX = 0, bossHP = 0;
 let player2Mode = false;
+let particles = [];
 
 // ===== ЗВУКИ =====
 let audioCtx = null, musicPlaying = false, musicTimer = null;
@@ -752,12 +690,105 @@ function stopMusic() {
   musicPlaying = false;
   if (musicTimer) { clearTimeout(musicTimer); musicTimer = null; }
 }
-  // ===== ИГРА =====
+// ===== ВЗРЫВ ЧАСТИЦ =====
+function spawnExplosion(x, y, color) {
+  for (let i = 0; i < 20; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 2 + Math.random() * 5;
+    particles.push({
+      x: x, y: y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 30 + Math.random() * 20,
+      maxLife: 50,
+      size: 4 + Math.random() * 8,
+      color: color || '#ff8800',
+      rot: Math.random() * Math.PI * 2,
+      vr: (Math.random() - 0.5) * 0.3
+    });
+  }
+  for (let i = 0; i < 10; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 3 + Math.random() * 6;
+    particles.push({
+      x: x, y: y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 20 + Math.random() * 15,
+      maxLife: 35,
+      size: 3 + Math.random() * 5,
+      color: '#ffdd44',
+      rot: 0,
+      vr: 0
+    });
+  }
+}
+
+// ===== ВЗРЫВ ТРУБЫ (как в Subway Surfers) =====
+function explodePipe(p) {
+  // Взрыв по всей высоте трубы — несколько точек
+  const cx = p.x + PIPE_W / 2;
+  const bottomY = p.top + GAP;
+  // Взрыв верхней части
+  spawnExplosion(cx, p.top * 0.5, '#1e5aa8');
+  spawnExplosion(cx, p.top * 0.5, '#4a95dd');
+  // Взрыв нижней части
+  spawnExplosion(cx, bottomY + (H - bottomY) * 0.5, '#1e5aa8');
+  spawnExplosion(cx, bottomY + (H - bottomY) * 0.5, '#4a95dd');
+  // Взрыв у щели (где столкнулись)
+  spawnExplosion(cx, p.top, '#ffdd44');
+  spawnExplosion(cx, bottomY, '#ffdd44');
+  // Тёмные осколки (граффити-контур)
+  for (let i = 0; i < 15; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 4 + Math.random() * 8;
+    particles.push({
+      x: cx + (Math.random() - 0.5) * PIPE_W,
+      y: Math.random() < 0.5 ? p.top * Math.random() : bottomY + Math.random() * (H - bottomY),
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 2,
+      life: 40 + Math.random() * 20,
+      maxLife: 60,
+      size: 5 + Math.random() * 10,
+      color: '#0d2f5c',
+      rot: Math.random() * Math.PI * 2,
+      vr: (Math.random() - 0.5) * 0.4
+    });
+  }
+}
+
+// ===== ВЗРЫВ БОССА =====
+function explodeBoss() {
+  const cx = bossX;
+  const cy = H / 2;
+  spawnExplosion(cx, cy, '#8a2020');
+  spawnExplosion(cx, cy, '#ff3030');
+  spawnExplosion(cx, cy, '#ffd93b');
+  spawnExplosion(cx + 20, cy - 20, '#8a2020');
+  spawnExplosion(cx - 20, cy + 20, '#ff3030');
+  for (let i = 0; i < 30; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 5 + Math.random() * 10;
+    particles.push({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 50 + Math.random() * 30,
+      maxLife: 80,
+      size: 6 + Math.random() * 12,
+      color: ['#8a2020', '#ff3030', '#ffd93b', '#000'][Math.floor(Math.random() * 4)],
+      rot: Math.random() * Math.PI * 2,
+      vr: (Math.random() - 0.5) * 0.5
+    });
+  }
+}
+
 function reset() {
   bird = { x: W * 0.28, y: H / 2, r: 22, vy: 0, rot: 0, tailWag: 0 };
   bird2 = { x: W * 0.28, y: H / 2, r: 22, vy: 0, rot: 0, tailWag: 0, alive: true };
   pipes = [];
   fallingCoins = [];
+  particles = [];
   score = 0;
   frame = 0;
   state = 'ready';
@@ -775,6 +806,7 @@ function reset() {
   progressBar.style.display = 'none';
   msg.textContent = 'Тапни, чтобы начать';
   stopMusic();
+  window._lastBossScore = 0;
 }
 
 function updateMenuUI() {
@@ -791,6 +823,7 @@ function showMenu() {
   shop.classList.add('hidden');
   ach.classList.add('hidden');
   topEl.classList.add('hidden');
+  if (dailyEl) dailyEl.classList.add('hidden');
   reset();
   updateMenuUI();
   checkDailyReward();
@@ -815,15 +848,29 @@ function showTop() {
   buildTop();
 }
 
+function showDaily() {
+  menu.classList.add('hidden');
+  shop.classList.add('hidden');
+  ach.classList.add('hidden');
+  topEl.classList.add('hidden');
+  dailyEl.classList.remove('hidden');
+  buildDaily();
+}
+
 function startGame(modeName) {
   menu.classList.add('hidden');
   shop.classList.add('hidden');
   ach.classList.add('hidden');
   topEl.classList.add('hidden');
+  if (dailyEl) dailyEl.classList.add('hidden');
   reset();
   mode = modeName || 'normal';
   if (mode === '2p') player2Mode = true;
   if (mode === 'night') timeOfDay = 'night';
+  // прогресс задания "сыграй N игр"
+  dailyQuests.stats.games = (dailyQuests.stats.games || 0) + 1;
+  updateQuests();
+  writeDaily();
 }
 
 function flap() {
@@ -849,19 +896,18 @@ function flap2() {
   }
 }
 
-// Управление
 canvas.addEventListener('touchstart', e => {
   e.preventDefault();
-  if (menu.classList.contains('hidden') && shop.classList.contains('hidden') && ach.classList.contains('hidden') && topEl.classList.contains('hidden')) flap();
+  if (menu.classList.contains('hidden') && shop.classList.contains('hidden') && ach.classList.contains('hidden') && topEl.classList.contains('hidden') && dailyEl.classList.contains('hidden')) flap();
 }, {passive:false});
 canvas.addEventListener('mousedown', e => {
   e.preventDefault();
-  if (menu.classList.contains('hidden') && shop.classList.contains('hidden') && ach.classList.contains('hidden') && topEl.classList.contains('hidden')) flap();
+  if (menu.classList.contains('hidden') && shop.classList.contains('hidden') && ach.classList.contains('hidden') && topEl.classList.contains('hidden') && dailyEl.classList.contains('hidden')) flap();
 });
 window.addEventListener('keydown', e => {
   if (e.code === 'Space' || e.code === 'ArrowUp') {
     e.preventDefault();
-    if (menu.classList.contains('hidden') && shop.classList.contains('hidden') && ach.classList.contains('hidden') && topEl.classList.contains('hidden')) flap();
+    if (menu.classList.contains('hidden') && shop.classList.contains('hidden') && ach.classList.contains('hidden') && topEl.classList.contains('hidden') && dailyEl.classList.contains('hidden')) flap();
   }
   if (e.code === 'KeyW') {
     e.preventDefault();
@@ -869,7 +915,6 @@ window.addEventListener('keydown', e => {
   }
 });
 
-// Кнопки меню
 document.getElementById('btn-play').addEventListener('click', () => startGame('normal'));
 document.getElementById('btn-2p').addEventListener('click', () => startGame('2p'));
 document.getElementById('btn-night').addEventListener('click', () => startGame('night'));
@@ -879,6 +924,8 @@ document.getElementById('btn-top').addEventListener('click', showTop);
 document.getElementById('btn-shop-back').addEventListener('click', showMenu);
 document.getElementById('btn-ach-back').addEventListener('click', showMenu);
 document.getElementById('btn-top-back').addEventListener('click', showMenu);
+document.getElementById('btn-daily').addEventListener('click', showDaily);
+document.getElementById('btn-daily-back').addEventListener('click', showMenu);
 document.getElementById('btn-reset').addEventListener('click', () => {
   if (confirm('Сбросить весь прогресс?')) {
     save = { record:0, coins:0, maxCoins:0, owned:['orange'], current:'orange',
@@ -889,7 +936,6 @@ document.getElementById('btn-reset').addEventListener('click', () => {
   }
 });
 
-// Табы магазина
 let currentTab = 'skins';
 document.getElementById('tab-skins').addEventListener('click', () => {
   currentTab = 'skins';
@@ -931,7 +977,6 @@ function drawDogPreview(c, skin) {
   const r = 28;
   const cx = 45;
   const cy = 49;
-
   c.save();
 
   // Хвост
@@ -963,7 +1008,6 @@ function drawDogPreview(c, skin) {
   c.lineWidth = 2.2;
   c.stroke();
 
-  // Пятна
   if (skin.spots) {
     c.fillStyle = '#2a2a2a';
     c.beginPath(); c.ellipse(cx - r*0.4, cy - r*0.15, r*0.15, r*0.12, 0.3, 0, Math.PI*2); c.fill();
@@ -1067,7 +1111,6 @@ function drawDogPreview(c, skin) {
   c.restore();
 }
 
-
 // ===== МАГАЗИН =====
 function buildShop(tab) {
   shopGrid.innerHTML = '';
@@ -1140,7 +1183,7 @@ function onItemClick(item, tab) {
     buildShop(tab);
     updateMenuUI();
     checkAchievements();
-    } else {
+  } else {
     const el = document.getElementById('quest-toast');
     if (el) {
       el.querySelector('.t-icon').textContent = '💸';
@@ -1185,7 +1228,6 @@ function checkAchievements() {
   }
 }
 
-// ===== ВСПЛЫВАЮЩЕЕ ОКОШКО АЧИВКИ =====
 let achToastTimer = null;
 let achToastQueue = [];
 let achToastShowing = false;
@@ -1220,7 +1262,6 @@ function processAchToastQueue() {
   }, 3000);
 }
 
-
 // ===== ТОП-5 =====
 function buildTop() {
   const list = document.getElementById('top-list');
@@ -1247,7 +1288,6 @@ function saveScore(s) {
   save.topScores.sort((a, b) => b.score - a.score);
   save.topScores = save.topScores.slice(0, 5);
 }
-
 // ===== СПАВН ТРУБ =====
 function spawnPipe() {
   const minTop = 80;
@@ -1279,7 +1319,8 @@ function spawnPipe() {
 // ===== ОБНОВЛЕНИЕ ИГРЫ =====
 function update() {
   const inMenu = !menu.classList.contains('hidden') || !shop.classList.contains('hidden') ||
-                 !ach.classList.contains('hidden') || !topEl.classList.contains('hidden');
+                 !ach.classList.contains('hidden') || !topEl.classList.contains('hidden') ||
+                 (dailyEl && !dailyEl.classList.contains('hidden'));
 
   if (inMenu) {
     if (state === 'ready') {
@@ -1290,6 +1331,8 @@ function update() {
       petFrame++;
       petY = H / 2 + 20 + Math.sin(frame / 8) * 5;
     }
+    // Обновляем частицы даже в меню (чтобы взрывы догорали)
+    updateParticles();
     return;
   }
 
@@ -1306,7 +1349,7 @@ function update() {
     bird.rot += (targetRot - bird.rot) * 0.2;
     bird.tailWag = Math.sin(frame / 4) * 0.6;
 
-    // ====== Собачка 2 (режим 2 игрока) ======
+    // ====== Собачка 2 ======
     if (player2Mode && bird2.alive) {
       bird2.vy += GRAVITY;
       if (bird2.vy > MAX_FALL) bird2.vy = MAX_FALL;
@@ -1324,7 +1367,7 @@ function update() {
     petX = bird.x - 35;
     petY = bird.y + 22 + Math.sin(frame / 6) * 3;
 
-    // ====== Ускорение со временем ======
+    // ====== Ускорение ======
     speedMultiplier = 1 + Math.floor(score / 10) * 0.15;
 
     // ====== День/ночь ======
@@ -1357,6 +1400,9 @@ function update() {
       if (bossX < -150) {
         bossMode = false;
         save.bossKilled = (save.bossKilled || 0) + 1;
+        dailyQuests.stats.boss = (dailyQuests.stats.boss || 0) + 1;
+        updateQuests();
+        writeDaily();
         checkAchievements();
       }
     }
@@ -1367,7 +1413,7 @@ function update() {
       p.x -= PIPE_SPEED * speedMultiplier;
       p.bone.x -= PIPE_SPEED * speedMultiplier;
 
-      // Магнит притягивает косточки
+      // Магнит
       if (magnet > 0 && !p.bone.eaten) {
         const dx = bird.x - p.bone.x;
         const dy = bird.y - p.bone.y;
@@ -1385,10 +1431,23 @@ function update() {
         if (dx < bird.r + 20 && dy < bird.r + 20) {
           p.bone.eaten = true;
           let points = 1;
-          if (p.bone.type === 'gold') { points = 5; save.totalBones = (save.totalBones||0) + 1; }
-          else if (p.bone.type === 'magnet') { magnet = 300; save.magnets = (save.magnets||0) + 1; points = 2; }
-          else if (p.bone.type === 'shield') { shield = 1; save.shieldsUsed = (save.shieldsUsed||0) + 1; points = 2; }
-          else { save.totalBones = (save.totalBones||0) + 1; }
+          if (p.bone.type === 'gold') {
+            points = 5; save.totalBones = (save.totalBones||0) + 1;
+            dailyQuests.stats.gold = (dailyQuests.stats.gold || 0) + 1;
+            dailyQuests.stats.bones = (dailyQuests.stats.bones || 0) + 1;
+          }
+          else if (p.bone.type === 'magnet') {
+            magnet = 300; save.magnets = (save.magnets||0) + 1; points = 2;
+            dailyQuests.stats.magnets = (dailyQuests.stats.magnets || 0) + 1;
+          }
+          else if (p.bone.type === 'shield') {
+            shield = 1; save.shieldsUsed = (save.shieldsUsed||0) + 1; points = 2;
+            dailyQuests.stats.shields = (dailyQuests.stats.shields || 0) + 1;
+          }
+          else {
+            save.totalBones = (save.totalBones||0) + 1;
+            dailyQuests.stats.bones = (dailyQuests.stats.bones || 0) + 1;
+          }
           score += points;
           hud.textContent = score;
           combo++;
@@ -1398,6 +1457,8 @@ function update() {
             comboText.style.display = 'block';
           }
           soundScore();
+          updateQuests();
+          writeDaily();
           checkAchievements();
         }
       }
@@ -1405,7 +1466,7 @@ function update() {
       // Удаление
       if (p.x + PIPE_W < -20) pipes.splice(i, 1);
 
-      // Столкновение с трубой
+      // === СТОЛКНОВЕНИЕ С ТРУБОЙ ===
       const bx1 = bird.x - bird.r * 0.7, bx2 = bird.x + bird.r * 0.7;
       const by1 = bird.y - bird.r * 0.7, by2 = bird.y + bird.r * 0.7;
       const px1 = p.x, px2 = p.x + PIPE_W;
@@ -1413,7 +1474,14 @@ function update() {
 
       if (bx2 > px1 && bx1 < px2) {
         if (by1 < gy1 || by2 > gy2) {
-          if (shield > 0) { shield = 0; soundCoin(); }
+          if (shield > 0) {
+            // 💥 ЩИТ СПАСАЕТ — труба ВЗРЫВАЕТСЯ
+            shield = 0;
+            soundCoin();
+            explodePipe(p);
+            pipes.splice(i, 1);
+            continue;
+          }
           else gameOver();
         }
       }
@@ -1431,21 +1499,21 @@ function update() {
       }
     }
 
-// ====== Босс столкновение (учитываем круглого босса) ======
-if (bossMode) {
-  const bossRadius = 45;
-  const bossCenterX = bossX;
-  const bossCenterY = H / 2;
+    // === СТОЛКНОВЕНИЕ С БОССОМ ===
+    // ⚠️ Босс убивает ВСЕГДА, даже со щитом!
+    if (bossMode) {
+      const bossRadius = 45;
+      const bossCenterX = bossX;
+      const bossCenterY = H / 2;
+      const dxB = bird.x - bossCenterX;
+      const dyB = bird.y - bossCenterY;
+      const distB = Math.sqrt(dxB*dxB + dyB*dyB);
 
-  const dxB = bird.x - bossCenterX;
-  const dyB = bird.y - bossCenterY;
-  const distB = Math.sqrt(dxB*dxB + dyB*dyB);
-
-  if (distB < bossRadius) {
-    if (shield > 0) { shield = 0; soundCoin(); }
-    else gameOver();
-  }
-}
+      if (distB < bossRadius + bird.r * 0.5) {
+        explodeBoss();
+        gameOver();
+      }
+    }
 
     // ====== Падающие монеты ======
     for (let i = fallingCoins.length - 1; i >= 0; i--) {
@@ -1461,6 +1529,9 @@ if (bossMode) {
         score += 5;
         hud.textContent = score;
         soundCoin();
+        dailyQuests.stats.coins = (dailyQuests.stats.coins || 0) + 1;
+        updateQuests();
+        writeDaily();
         fallingCoins.splice(i, 1);
       }
     }
@@ -1485,8 +1556,26 @@ if (bossMode) {
       progressFill.style.width = pct + '%';
     }
   }
+
+  // ====== Обновление частиц ======
+  updateParticles();
 }
 
+// ===== Обновление частиц (вынесено отдельно) =====
+function updateParticles() {
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const pt = particles[i];
+    pt.x += pt.vx;
+    pt.y += pt.vy;
+    pt.vy += 0.25;   // гравитация
+    pt.vx *= 0.99;   // трение
+    pt.rot += pt.vr;
+    pt.life--;
+    if (pt.life <= 0) particles.splice(i, 1);
+  }
+}
+
+// ===== КОНЕЦ ИГРЫ =====
 function gameOver() {
   state = 'over';
   stopMusic();
@@ -1496,6 +1585,14 @@ function gameOver() {
   if (save.coins > save.maxCoins) save.maxCoins = save.coins;
   if (score > save.record) save.record = score;
   if (score > 0) saveScore(score);
+
+  // Статистика за забег
+  dailyQuests.stats.totalScore = (dailyQuests.stats.totalScore || 0) + score;
+  if (score > (dailyQuests.bestRun || 0)) dailyQuests.bestRun = score;
+  if (combo > (dailyQuests.bestCombo || 0)) dailyQuests.bestCombo = combo;
+  writeDaily();
+  updateQuests();
+
   checkAchievements();
   writeSave();
 
@@ -1504,7 +1601,6 @@ function gameOver() {
     + '<br>💰 +' + score + ' монет'
     + '<br><small>Тапни, чтобы в меню</small>';
 }
-
 // ===== КОСТОЧКА =====
 function drawBone(x, y, size, rot, type) {
   ctx.save();
@@ -1540,7 +1636,6 @@ function drawBone(x, y, size, rot, type) {
   ctx.arc(-size/2 + 4, -r*0.6, r*0.25, 0, Math.PI*2);
   ctx.fill();
 
-  // Иконка типа
   if (type && type !== 'normal') {
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 14px Arial';
@@ -1681,33 +1776,29 @@ function drawDog(x, y, r, rot, tailWag, skin, dead) {
 
 function drawShiba() { drawDog(bird.x, bird.y, bird.r, bird.rot, bird.tailWag, getSkin(), false); }
 
-// ===== ПИТОМЕЦ-КОТЁНОК =====
+// ===== ПИТОМЕЦ =====
 function drawPet() {
   ctx.save();
   ctx.translate(petX, petY);
   const s = 10;
-  // Тело
   ctx.fillStyle = '#888';
   ctx.beginPath();
   ctx.ellipse(0, 0, s, s * 0.8, 0, 0, Math.PI * 2);
   ctx.fill();
-  // Голова
   ctx.fillStyle = '#999';
   ctx.beginPath();
   ctx.arc(0, -s * 0.8, s * 0.7, 0, Math.PI * 2);
   ctx.fill();
-  // Ушки
   ctx.beginPath();
   ctx.moveTo(-s * 0.5, -s * 1.2);
   ctx.lineTo(-s * 0.2, -s * 1.7);
   ctx.lineTo(0, -s * 1.1);
   ctx.fill();
   ctx.beginPath();
-    ctx.moveTo(s * 0.5, -s * 1.2);
+  ctx.moveTo(s * 0.5, -s * 1.2);
   ctx.lineTo(s * 0.2, -s * 1.7);
   ctx.lineTo(0, -s * 1.1);
   ctx.fill();
-  // Глазки
   ctx.fillStyle = '#000';
   ctx.beginPath();
   ctx.arc(-s * 0.25, -s * 0.9, s * 0.1, 0, Math.PI * 2);
@@ -1715,7 +1806,6 @@ function drawPet() {
   ctx.beginPath();
   ctx.arc(s * 0.25, -s * 0.9, s * 0.1, 0, Math.PI * 2);
   ctx.fill();
-  // Носик
   ctx.fillStyle = '#ff88aa';
   ctx.beginPath();
   ctx.arc(0, -s * 0.65, s * 0.08, 0, Math.PI * 2);
@@ -1723,12 +1813,25 @@ function drawPet() {
   ctx.restore();
 }
 
+// ===== ЧАСТИЦЫ =====
+function drawParticles() {
+  for (const pt of particles) {
+    const alpha = pt.life / pt.maxLife;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(pt.x, pt.y);
+    ctx.rotate(pt.rot);
+    ctx.fillStyle = pt.color;
+    ctx.fillRect(-pt.size/2, -pt.size/2, pt.size, pt.size);
+    ctx.restore();
+  }
+}
+
 // ===== БОСС =====
 function drawBoss() {
   if (!bossMode) return;
   ctx.save();
   ctx.translate(bossX, H / 2);
-  // Тело
   ctx.fillStyle = '#8a2020';
   ctx.beginPath();
   ctx.arc(0, 0, 55, 0, Math.PI * 2);
@@ -1736,22 +1839,12 @@ function drawBoss() {
   ctx.strokeStyle = '#000';
   ctx.lineWidth = 3;
   ctx.stroke();
-  // Глаза
   ctx.fillStyle = '#ffd93b';
-  ctx.beginPath();
-  ctx.arc(-18, -10, 10, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(18, -10, 10, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.beginPath(); ctx.arc(-18, -10, 10, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(18, -10, 10, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#000';
-  ctx.beginPath();
-  ctx.arc(-18, -10, 5, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(18, -10, 5, 0, Math.PI * 2);
-  ctx.fill();
-  // Злая улыбка
+  ctx.beginPath(); ctx.arc(-18, -10, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(18, -10, 5, 0, Math.PI * 2); ctx.fill();
   ctx.strokeStyle = '#fff';
   ctx.lineWidth = 4;
   ctx.beginPath();
@@ -1761,7 +1854,6 @@ function drawBoss() {
   ctx.lineTo(10, 22);
   ctx.lineTo(20, 15);
   ctx.stroke();
-  // Рога
   ctx.fillStyle = '#000';
   ctx.beginPath();
   ctx.moveTo(-40, -35);
@@ -1778,7 +1870,7 @@ function drawBoss() {
   ctx.restore();
 }
 
-// ===== ТРУБЫ =====
+// ===== ТРУБЫ (граффити) =====
 function drawGraffiti(x, y, w, h, seed) {
   if (h <= 0 || w <= 0) return;
   ctx.save();
@@ -1901,7 +1993,6 @@ function drawFallingCoins() {
 }
 
 function drawBackground() {
-  // Основной фон из скина
   const bg = getBG();
   const grad = ctx.createLinearGradient(0, 0, 0, H);
   grad.addColorStop(0, bg.top);
@@ -1909,7 +2000,6 @@ function drawBackground() {
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, H);
 
-  // День/ночь поверх (если обычный режим)
   if (mode !== 'night' && timeOfDay !== 'day' && save.bgCurrent === 'day') {
     if (timeOfDay === 'dusk') {
       ctx.fillStyle = 'rgba(255, 140, 60, 0.25)';
@@ -1920,7 +2010,6 @@ function drawBackground() {
     } else if (timeOfDay === 'night') {
       ctx.fillStyle = 'rgba(10, 10, 40, 0.55)';
       ctx.fillRect(0, 0, W, H);
-      // Звёзды
       ctx.fillStyle = '#fff';
       for (let i = 0; i < 30; i++) {
         const sx = (i * 137.5) % W;
@@ -1934,7 +2023,6 @@ function drawBackground() {
       ctx.globalAlpha = 1;
     }
   }
-  // Режим "ночь"
   if (mode === 'night') {
     ctx.fillStyle = 'rgba(10, 10, 40, 0.6)';
     ctx.fillRect(0, 0, W, H);
@@ -1973,7 +2061,7 @@ function draw() {
   if (player2Mode) {
     drawDog(bird2.x, bird2.y, bird2.r, bird2.rot, bird2.tailWag, getSkin(), !bird2.alive);
   }
-  // Индикатор щита
+  // Щит
   if (shield > 0) {
     ctx.save();
     ctx.strokeStyle = '#50c8ff';
@@ -1984,7 +2072,7 @@ function draw() {
     ctx.stroke();
     ctx.restore();
   }
-  // Индикатор магнита
+  // Магнит
   if (magnet > 0) {
     ctx.save();
     ctx.strokeStyle = '#ff5050';
@@ -1995,6 +2083,8 @@ function draw() {
     ctx.stroke();
     ctx.restore();
   }
+  // Частицы — поверх всего
+  drawParticles();
 }
 
 function loop() {
@@ -2003,188 +2093,7 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
-
-// ===== КНОПКА "ЗАДАНИЯ" В МЕНЮ =====
-document.getElementById('btn-daily').addEventListener('click', showDaily);
-document.getElementById('btn-daily-back').addEventListener('click', showMenu);
-
-function showDaily() {
-  menu.classList.add('hidden');
-  shop.classList.add('hidden');
-  ach.classList.add('hidden');
-  topEl.classList.add('hidden');
-  dailyEl.classList.remove('hidden');
-  buildDaily();
-}
-
-// ===== СКРЫТЬ daily ПРИ ВЫХОДЕ В МЕНЮ =====
-const _showMenuOrig = showMenu;
-showMenu = function() {
-  if (dailyEl) dailyEl.classList.add('hidden');
-  _showMenuOrig();
-};
-
-// ===== ЗАПУСК ЗАДАНИЙ ПРИ СТАРТЕ ИГРЫ =====
-const _startGameOrig = startGame;
-startGame = function(m) {
-  dailyQuests.stats.games = (dailyQuests.stats.games || 0) + 1;
-  updateQuests();
-  writeDaily();
-  _startGameOrig(m);
-};
-
-// ===== ХУК НА КОСТОЧКУ (учёт в заданиях) =====
-const _spawnPipeOrig = spawnPipe;
-// Запоминаем сколько уже съедено, чтобы в gameOver посчитать
-let _runBonesCount = 0;
-let _runGoldCount = 0;
-let _runCoinsCount = 0;
-let _runMagnetCount = 0;
-let _runShieldCount = 0;
-let _runBestCombo = 0;
-
-// Обёртка съедания косточки — встраиваем в update через патч
-// Проще: переопределим getter-хуки через функцию updateQuestsAfterBone
-function trackBone(type) {
-  if (type === 'gold') {
-    dailyQuests.stats.gold = (dailyQuests.stats.gold || 0) + 1;
-    _runGoldCount++;
-    _runBonesCount++;
-    dailyQuests.stats.bones = (dailyQuests.stats.bones || 0) + 1;
-  } else if (type === 'magnet') {
-    dailyQuests.stats.magnets = (dailyQuests.stats.magnets || 0) + 1;
-    _runMagnetCount++;
-  } else if (type === 'shield') {
-    dailyQuests.stats.shields = (dailyQuests.stats.shields || 0) + 1;
-    _runShieldCount++;
-  } else {
-    dailyQuests.stats.bones = (dailyQuests.stats.bones || 0) + 1;
-    _runBonesCount++;
-  }
-  updateQuests();
-  writeDaily();
-}
-
-function trackCoin() {
-  dailyQuests.stats.coins = (dailyQuests.stats.coins || 0) + 1;
-  _runCoinsCount++;
-  updateQuests();
-  writeDaily();
-}
-
-function trackBoss() {
-  dailyQuests.stats.boss = (dailyQuests.stats.boss || 0) + 1;
-  updateQuests();
-  writeDaily();
-}
-
-// ===== ПЕРЕХВАТ СОБЫТИЙ В update() =====
-// Патчим update — оборачиваем, чтобы ловить изменения
-const _updateOrig = update;
-update = function() {
-  const prevScore = score;
-  const prevBones = _runBonesCount;
-  const prevGold = _runGoldCount;
-  const prevCoins = _runCoinsCount;
-  const prevMagnets = _runMagnetCount;
-  const prevShields = _runShieldCount;
-  const prevBoss = bossMode;
-
-  _updateOrig();
-
-  // Смотрим что изменилось
-  // Косточки и монеты отслеживаем через дельту в stats — проще:
-  // Нам нужно ловить события в момент. Но update не возвращает детали.
-  // Поэтому используем счётчики через обёртки (см. ниже).
-};
-
-// ===== ПРОСТОЙ СПОСОБ — правки прямо в ключевых местах через observer =====
-// Так как update использует drawBone и т.д., лучший путь — добавить
-// прямо в gameOver запись статистики за забег:
-
-const _gameOverOrig = gameOver;
-gameOver = function() {
-  // Обновляем задания по итогам забега
-  registerRunEnd(score, Math.max(combo, _runBestCombo));
-  // Считаем звёзды за забег
-  _runBonesCount = 0;
-  _runGoldCount = 0;
-  _runCoinsCount = 0;
-  _runMagnetCount = 0;
-  _runShieldCount = 0;
-  _runBestCombo = 0;
-  _gameOverOrig();
-};
-
-// ===== ПРЯМАЯ ЗАПИСЬ В МОМЕНТ СОБЫТИЙ =====
-// Патчим через добавление счётчиков в обновление gameOver и в ключевые функции.
-
-// Перехватываем вызовы звуков — они как раз в момент события!
-const _soundScoreHook = soundScore;
-soundScore = function() {
-  if (soundEnabled) _soundScoreHook();
-  // Не знаем тип косточки, но знаем что это +1 к bones или +5 к gold
-  // Проще — считать по дельте score
-};
-
-// Точный способ: используем MutationObserver-free подход
-// Переопределяем поведение прямо в момент — через счётчики-обёртки над updateBone/drawBones и т.д.
-
-// Практичнее — правки в коде пользователя. Но чтобы не переписывать:
-// Используем ПАТЧ через переопределение функции drawBones и ловим событие eaten.
-
-const _drawBonesOrig = drawBones;
-drawBones = function() {
-  // До отрисовки проверяем: сколько косточек съедено в этом кадре?
-  for (const p of pipes) {
-    if (p.bone && p.bone.eaten && !p.bone._counted) {
-      p.bone._counted = true;
-      trackBone(p.bone.type);
-    }
-  }
-  _drawBonesOrig();
-};
-
-const _drawFallingCoinsOrig = drawFallingCoins;
-// Патч монет — они удаляются через splice, поэтому легче патчить сам update
-// Но проще — встроить счётчик в spawnPipe: не поможет.
-
-// Патч монет через drawFallingCoins — до удаления из массива проверим got
-// Но счётчик сработает многократно, поэтому используем флаг _counted
-const _origDrawFallingCoins = drawFallingCoins;
-drawFallingCoins = function() {
-  for (const c of fallingCoins) {
-    if (c.got && !c._counted) {
-      c._counted = true;
-      trackCoin();
-    }
-  }
-  _origDrawFallingCoins();
-};
-
-// ===== ХУК НА БОССА =====
-// Босс "пройден" когда bossMode = false после true
-let _lastBossMode = false;
-const _drawBossHook = drawBoss;
-drawBoss = function() {
-  if (_lastBossMode === true && bossMode === false) {
-    // Только что прошёл
-    trackBoss();
-  }
-  _lastBossMode = bossMode;
-  _drawBossHook();
-};
-
-// ===== ХУК КОМБО =====
-// Отслеживаем пик комбо
-const _origUpdate = update;
-// (уже обёрнут выше) — поэтому просто перепроверим combo в draw
-const _origDrawHook = draw;
-draw = function() {
-  if (combo > _runBestCombo) _runBestCombo = combo;
-  _origDrawHook();
-};
-// ===== ФИНАЛЬНЫЙ СТАРТ =====
+// ===== СТАРТ =====
 loadSave();
 loadDaily();
 updateSoundIcon();
